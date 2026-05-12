@@ -1,0 +1,131 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar: hsl(var(--sidebar));
+  --color-chart-5: hsl(var(--chart-5));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-ring: hsl(var(--ring));
+  --color-input: hsl(var(--input));
+  --color-border: hsl(var(--border));
+  --color-destructive: hsl(var(--destructive));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card: hsl(var(--card));
+  
+  /* Brand Colors for SBYF */
+  --color-saffron: #E67E22;
+  --color-navy: #0B3C5D;
+  --color-success-green: #27AE60;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* Cream Kesari Background */
+  --background: 28 60% 96%; /* HSL for #FEF5EB */
+  --foreground: 204 79% 10%; /* Very dark navy/charcoal */
+  
+  --card: 0 0% 100%;
+  --card-foreground: 204 79% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 204 79% 10%;
+  
+  /* Primary is Saffron */
+  --primary: 28 80% 52%; /* #E67E22 */
+  --primary-foreground: 0 0% 100%;
+  
+  /* Secondary is Navy */
+  --secondary: 204 79% 20%; /* #0B3C5D */
+  --secondary-foreground: 0 0% 100%;
+  
+  --muted: 40 20% 90%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --accent: 40 40% 90%;
+  --accent-foreground: 204 79% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 40 20% 85%;
+  --input: 40 20% 85%;
+  --ring: 28 80% 52%; /* Saffron ring */
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* Darker earth tone for dark mode */
+  --background: 204 30% 8%;
+  --foreground: 40 40% 94%;
+  
+  --card: 204 30% 10%;
+  --card-foreground: 40 40% 94%;
+  --popover: 204 30% 10%;
+  --popover-foreground: 40 40% 94%;
+  
+  --primary: 28 80% 52%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 204 79% 20%;
+  --secondary-foreground: 0 0% 100%;
+  
+  --muted: 204 20% 15%;
+  --muted-foreground: 40 20% 70%;
+  --accent: 204 20% 15%;
+  --accent-foreground: 40 40% 94%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --border: 204 20% 20%;
+  --input: 204 20% 20%;
+  --ring: 28 80% 52%;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Ensure inputs have at least 16px font size to prevent iOS zoom */
+  input, textarea, select {
+    @apply text-base;
+  }
+  
+  /* Ensure buttons and interactive elements have min 44px tap target */
+  button {
+    @apply min-h-[44px];
+  }
+}
