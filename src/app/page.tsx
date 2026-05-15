@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/components/dictionary-provider";
+import Link from "next/link";
 
 export default function HomeBody() {
   const dict = useDictionary();
@@ -47,8 +48,14 @@ export default function HomeBody() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-4 pt-2">
-                <Button className="bg-[#138808] hover:bg-green-800 text-white font-black h-14 px-10 rounded-none text-lg">{dict.homeNew.registerBtn}</Button>
-                <Button variant="outline" className="border-2 border-[#000080] text-[#000080] font-black h-14 px-10 rounded-none text-lg">{dict.homeNew.downloadBtn}</Button>
+                <Button  className="bg-[#138808] hover:bg-green-800 text-white font-black h-14 px-10 rounded-none text-lg">
+                  <Link href="/register">{dict.homeNew.registerBtn}</Link>
+                </Button>
+                <Button  variant="outline" className="border-2 border-[#000080] text-[#000080] font-black h-14 px-10 rounded-none text-lg">
+                  <a href="/Swavalambi_Bharat_Yuva_Fellowship_Proposal (4).pdf" download>
+                    {dict.homeNew.downloadBtn}
+                  </a>
+                </Button>
               </div>
             </div>
             <div className="lg:col-span-5">
@@ -236,8 +243,8 @@ export default function HomeBody() {
                     {dict.homeNew.applyBtn}
                   </Button>
                   <div className="flex gap-4">
-                    <Button variant="outline" className="flex-1 h-12 border-white/20 text-white font-bold hover:bg-white/10 rounded-none">{dict.homeNew.reportBtn}</Button>
-                    <Button variant="outline" className="flex-1 h-12 border-white/20 text-white font-bold hover:bg-white/10 rounded-none">{dict.homeNew.jskBtn}</Button>
+                    <Button variant="outline" className="flex-1 h-12 border-white/20 text-black font-bold hover:bg-white/10 rounded-none">{dict.homeNew.reportBtn}</Button>
+                    <Button variant="outline" className="flex-1 h-12 border-white/20 text-black font-bold hover:bg-white/10 rounded-none">{dict.homeNew.jskBtn}</Button>
                   </div>
                 </div>
               </div>
