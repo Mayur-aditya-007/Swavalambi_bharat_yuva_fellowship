@@ -1,4 +1,9 @@
-"use client";
+import fs from "fs";
+import path from "path";
+
+const pagePath = path.resolve("src/app/page.tsx");
+
+const newContent = `"use client";
 
 import React from "react";
 import { motion } from "framer-motion";
@@ -248,3 +253,7 @@ export default function HomeBody() {
     </main>
   );
 }
+`;
+
+fs.writeFileSync(pagePath, newContent);
+console.log("page.tsx updated");

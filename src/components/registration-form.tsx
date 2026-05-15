@@ -34,7 +34,7 @@ const formSchema = z.object({
   whatsapp: z.string().regex(/^[0-9]{10}$/, "Valid 10-digit number required"),
   email: z.string().email("Required"),
   dob: z.string().min(1, "Required"),
-  gender: z.enum(["Male", "Female", "Other"], { required_error: "Required" }),
+  gender: z.enum(["Male", "Female", "Other"], { message: "Required" }),
   address: z.string().min(5, "Required"),
   district: z.string().min(2, "Required"),
   state: z.string().min(2, "Required"),
@@ -42,12 +42,12 @@ const formSchema = z.object({
   college_name: z.string().min(2, "Required"),
   course_stream: z.string().min(2, "Required"),
   year_semester: z.string().min(1, "Required"),
-  computer_knowledge: z.enum(["Beginner", "Intermediate", "Advanced"], { required_error: "Required" }),
-  social_media_knowledge: z.enum(["Beginner", "Intermediate", "Advanced"], { required_error: "Required" }),
+  computer_knowledge: z.enum(["Beginner", "Intermediate", "Advanced"], { message: "Required" }),
+  social_media_knowledge: z.enum(["Beginner", "Intermediate", "Advanced"], { message: "Required" }),
   work_interests: z.array(z.string()).min(1, "Required"),
-  nss_ncc_connected: z.enum(["Yes", "No"], { required_error: "Required" }),
+  nss_ncc_connected: z.enum(["Yes", "No"], { message: "Required" }),
   organization_details: z.string().optional(),
-  available_6_months: z.enum(["Yes", "No"], { required_error: "Required" }),
+  available_6_months: z.enum(["Yes", "No"], { message: "Required" }),
   weekly_time: z.string().optional(),
   available_time: z.array(z.string()).optional(),
   motivation: z.string().min(10, "Required"),
@@ -78,7 +78,7 @@ const formSchema = z.object({
   }
 });
 
-type FormData = z.infer<typeof formSchema>;
+type RegistrationFormValues = z.infer<typeof formSchema>;
 
 const WORK_INTERESTS = [
   "Social Media",
@@ -113,8 +113,8 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  } = useForm<RegistrationFormValues>({
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       work_interests: [],
       available_time: [],
@@ -123,7 +123,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
 
   const formValues = useWatch({ control });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: RegistrationFormValues) => {
     setServerError(null);
     startTransition(async () => {
       const formData = new FormData();

@@ -86,7 +86,7 @@ const dailyReportSchema = z.object({
   tomorrow_plan: z.string().min(5, "Required"),
 });
 
-type FormData = z.infer<typeof dailyReportSchema>;
+type DailyReportFormValues = z.infer<typeof dailyReportSchema>;
 
 const WORK_TYPES = [
   "Local Business Mapping",
@@ -108,8 +108,8 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
     control,
     watch,
     formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(dailyReportSchema),
+  } = useForm<DailyReportFormValues>({
+    resolver: zodResolver(dailyReportSchema) as any,
     defaultValues: {
       work_types: [],
       scheme_work_types: [],
@@ -136,7 +136,7 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: DailyReportFormValues) => {
     setServerError(null);
     startTransition(async () => {
       const formData = new FormData();
