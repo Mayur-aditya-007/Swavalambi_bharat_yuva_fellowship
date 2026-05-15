@@ -239,12 +239,13 @@ export default function HomeBody() {
                   <p className="text-lg font-bold text-white/60">sbachhattisgarh@gmail.com</p>
                 </div>
                 <div className="flex flex-col gap-4">
+                  <a href="/register">
                   <Button className="w-full h-16 bg-[#138808] hover:bg-green-700 text-white font-black text-xl rounded-none transition-transform hover:scale-105 shadow-2xl">
                     {dict.homeNew.applyBtn}
-                  </Button>
+                  </Button></a>
                   <div className="flex gap-4">
-                    <Button variant="outline" className="flex-1 h-12 border-white/20 text-black font-bold hover:bg-white/10 rounded-none">{dict.homeNew.reportBtn}</Button>
-                    <Button variant="outline" className="flex-1 h-12 border-white/20 text-black font-bold hover:bg-white/10 rounded-none">{dict.homeNew.jskBtn}</Button>
+                   <a href="/daily-report" className="w-1/2" > <Button variant="outline" className="flex-1  w-full h-12 border-white/20 text-black font-bold hover:bg-white/10 rounded-none">{dict.homeNew.reportBtn}</Button></a>
+                   <Button variant="outline" className="flex-1 w-1/2 h-12 border-white/20 text-black font-bold hover:bg-white/10 rounded-none">{dict.homeNew.jskBtn}</Button>
                   </div>
                 </div>
               </div>
