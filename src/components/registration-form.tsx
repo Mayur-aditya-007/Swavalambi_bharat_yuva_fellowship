@@ -46,9 +46,9 @@ const formSchema = z.object({
   social_media_knowledge: z.enum(["Beginner", "Intermediate", "Advanced"], { message: "Required" }),
   work_interests: z.array(z.string()).min(1, "Required"),
   nss_ncc_connected: z.enum(["Yes", "No"], { message: "Required" }),
-  organization_details: z.string().optional(),
+  organization_details: z.string().optional().or(z.literal("")),
   available_6_months: z.enum(["Yes", "No"], { message: "Required" }),
-  weekly_time: z.string().optional(),
+  weekly_time: z.string().optional().or(z.literal("")),
   available_time: z.array(z.string()).optional(),
   motivation: z.string().min(10, "Required"),
   district_opportunity: z.string().min(10, "Required"),
@@ -107,17 +107,38 @@ const INDIAN_STATES = [
 export function RegistrationForm({ dict }: { dict: Dictionary }) {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<RegistrationFormValues>({
     resolver: zodResolver(formSchema) as any,
+    shouldUnregister: true,
     defaultValues: {
+      full_name: "",
+      whatsapp: "",
+      email: "",
+      dob: "",
+      gender: undefined,
+      address: "",
+      district: "",
+      state: "",
+      qualification: "",
+      college_name: "",
+      course_stream: "",
+      year_semester: "",
+      computer_knowledge: undefined,
+      social_media_knowledge: undefined,
+      motivation: "",
+      district_opportunity: "",
       work_interests: [],
       available_time: [],
+      organization_details: "",
+      weekly_time: "",
     },
   });
 
@@ -125,19 +146,35 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
 
   const onSubmit = (data: RegistrationFormValues) => {
     setServerError(null);
+    
+    const cleanData = {
+      ...data,
+      organization_details: data.organization_details || "",
+      weekly_time: data.weekly_time || "",
+      available_time: data.available_time || [],
+    };
+
     startTransition(async () => {
       const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
+      Object.entries(cleanData).forEach(([key, value]) => {
         if (Array.isArray(value)) {
-          value.forEach((v) => formData.append(key, v));
-        } else if (value !== undefined) {
-          formData.append(key, value as string);
+          if (value.length === 0) {
+            formData.append(key, "");
+          } else {
+            value.forEach((v) => formData.append(key, v));
+          }
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
         }
       });
 
       const result = await submitRegistration(formData);
       if (result?.error) {
-        setServerError(typeof result.error === "string" ? result.error : dict.register.validationError);
+        if (result.error === "ALREADY_EXISTS") {
+          setShowModal(true);
+        } else {
+          setServerError(typeof result.error === "string" ? result.error : dict.register.validationError);
+        }
       }
     });
   };
@@ -146,405 +183,446 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
     const errorFields = Object.keys(errors).map(field => field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
     setServerError(`Please fix the errors in the following fields: ${errorFields.join(", ")}`);
     
-    const firstError = document.querySelector('.text-destructive');
-    if (firstError) {
-      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    setTimeout(() => {
+      const firstError = document.querySelector('.text-destructive');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 50);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-8">
-      {serverError && (
-        <div className="p-4 bg-destructive/10 text-destructive rounded-lg border border-destructive/20 text-sm font-medium">
-          {serverError}
-        </div>
-      )}
-
-      {/* 1. Personal Details */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
-        <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section1Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
-          <CardDescription>{dict.register.section1Desc}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="full_name" className="text-zinc-800 dark:text-zinc-200">{dict.register.fullName}</Label>
-              <Input id="full_name" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("full_name")} />
-              {errors.full_name && <p className="text-sm text-destructive">{errors.full_name.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="whatsapp" className="text-zinc-800 dark:text-zinc-200">{dict.register.whatsapp}</Label>
-              <Input id="whatsapp" type="tel" maxLength={10} className="bg-[#FEF5EB]/30 h-12 text-base" {...register("whatsapp")} />
-              {errors.whatsapp && <p className="text-sm text-destructive">{errors.whatsapp.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-zinc-800 dark:text-zinc-200">{dict.register.email}</Label>
-              <Input id="email" type="email" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("email")} />
-              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="dob" className="text-zinc-800 dark:text-zinc-200">{dict.register.dob}</Label>
-              <Input id="dob" type="date" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("dob")} />
-              {errors.dob && <p className="text-sm text-destructive">{errors.dob.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.gender}</Label>
-              <Controller
-                control={control}
-                name="gender"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value ?? null}>
-                    <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
-                      <SelectValue placeholder={dict.register.selectGender} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Male">{dict.register.genderMale}</SelectItem>
-                      <SelectItem value="Female">{dict.register.genderFemale}</SelectItem>
-                      <SelectItem value="Other">{dict.register.genderOther}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              
-              
-            </div>
+    <div className="relative">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="space-y-8">
+        {serverError && (
+          <div className="p-4 bg-destructive/10 text-destructive rounded-lg border border-destructive/20 text-sm font-medium">
+            {serverError}
           </div>
+        )}
 
-          <div className="space-y-2">
-            <Label htmlFor="address" className="text-zinc-800 dark:text-zinc-200">{dict.register.address}</Label>
-            <Textarea id="address" className="bg-[#FEF5EB]/30 text-base resize-none min-h-[80px]" {...register("address")} />
-            {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
-          </div>
+        {/* 1. Personal Details */}
+        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+          <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section1Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardDescription>{dict.register.section1Desc}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="full_name" className="text-zinc-800 dark:text-zinc-200">{dict.register.fullName}</Label>
+                <Input id="full_name" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("full_name")} />
+                {errors.full_name && <p className="text-sm text-destructive">{errors.full_name.message}</p>}
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="district" className="text-zinc-800 dark:text-zinc-200">{dict.register.district}</Label>
-              <Input id="district" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("district")} />
-              {errors.district && <p className="text-sm text-destructive">{errors.district.message}</p>}
+              <div className="space-y-2">
+                <Label htmlFor="whatsapp" className="text-zinc-800 dark:text-zinc-200">{dict.register.whatsapp}</Label>
+                <Input id="whatsapp" type="tel" maxLength={10} className="bg-[#FEF5EB]/30 h-12 text-base" {...register("whatsapp")} />
+                {errors.whatsapp && <p className="text-sm text-destructive">{errors.whatsapp.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-zinc-800 dark:text-zinc-200">{dict.register.email}</Label>
+                <Input id="email" type="email" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("email")} />
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dob" className="text-zinc-800 dark:text-zinc-200">{dict.register.dob}</Label>
+                <Input id="dob" type="date" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("dob")} />
+                {errors.dob && <p className="text-sm text-destructive">{errors.dob.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.gender}</Label>
+                <Controller
+                  control={control}
+                  name="gender"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
+                        <SelectValue placeholder={dict.register.selectGender} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Male">{dict.register.genderMale}</SelectItem>
+                        <SelectItem value="Female">{dict.register.genderFemale}</SelectItem>
+                        <SelectItem value="Other">{dict.register.genderOther}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.gender && <p className="text-sm text-destructive">{errors.gender.message}</p>}
+              </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="state" className="text-zinc-800 dark:text-zinc-200">{dict.register.state}</Label>
-              <Controller
-                control={control}
-                name="state"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value ?? null}>
-                    <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
-                      <SelectValue placeholder="Select State" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {INDIAN_STATES.map((stateName) => (
-                        <SelectItem key={stateName} value={stateName}>{stateName}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 2. Education Details */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
-        <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section2Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
-          <CardDescription>{dict.register.section2Desc}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="qualification" className="text-zinc-800 dark:text-zinc-200">{dict.register.qualification}</Label>
-              <Input id="qualification" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("qualification")} />
-              {errors.qualification && <p className="text-sm text-destructive">{errors.qualification.message}</p>}
+              <Label htmlFor="address" className="text-zinc-800 dark:text-zinc-200">{dict.register.address}</Label>
+              <Textarea id="address" className="bg-[#FEF5EB]/30 text-base resize-none min-h-[80px]" {...register("address")} />
+              {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="college_name" className="text-zinc-800 dark:text-zinc-200">{dict.register.collegeName}</Label>
-              <Input id="college_name" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("college_name")} />
-              {errors.college_name && <p className="text-sm text-destructive">{errors.college_name.message}</p>}
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="district" className="text-zinc-800 dark:text-zinc-200">{dict.register.district}</Label>
+                <Input id="district" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("district")} />
+                {errors.district && <p className="text-sm text-destructive">{errors.district.message}</p>}
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="course_stream" className="text-zinc-800 dark:text-zinc-200">{dict.register.courseStream}</Label>
-              <Input id="course_stream" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("course_stream")} />
-              {errors.course_stream && <p className="text-sm text-destructive">{errors.course_stream.message}</p>}
+              <div className="space-y-2">
+                <Label htmlFor="state" className="text-zinc-800 dark:text-zinc-200">{dict.register.state}</Label>
+                <Controller
+                  control={control}
+                  name="state"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
+                        <SelectValue placeholder="Select State" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INDIAN_STATES.map((stateName) => (
+                          <SelectItem key={stateName} value={stateName}>{stateName}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.state && <p className="text-sm text-destructive">{errors.state.message}</p>}
+              </div>
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <Label htmlFor="year_semester" className="text-zinc-800 dark:text-zinc-200">{dict.register.yearSemester}</Label>
-              <Input id="year_semester" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("year_semester")} />
-              {errors.year_semester && <p className="text-sm text-destructive">{errors.year_semester.message}</p>}
+        {/* 2. Education Details */}
+        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+          <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section2Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardDescription>{dict.register.section2Desc}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="qualification" className="text-zinc-800 dark:text-zinc-200">{dict.register.qualification}</Label>
+                <Input id="qualification" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("qualification")} />
+                {errors.qualification && <p className="text-sm text-destructive">{errors.qualification.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="college_name" className="text-zinc-800 dark:text-zinc-200">{dict.register.collegeName}</Label>
+                <Input id="college_name" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("college_name")} />
+                {errors.college_name && <p className="text-sm text-destructive">{errors.college_name.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="course_stream" className="text-zinc-800 dark:text-zinc-200">{dict.register.courseStream}</Label>
+                <Input id="course_stream" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("course_stream")} />
+                {errors.course_stream && <p className="text-sm text-destructive">{errors.course_stream.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="year_semester" className="text-zinc-800 dark:text-zinc-200">{dict.register.yearSemester}</Label>
+                <Input id="year_semester" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("year_semester")} />
+                {errors.year_semester && <p className="text-sm text-destructive">{errors.year_semester.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.computerKnowledge}</Label>
+                <Controller
+                  control={control}
+                  name="computer_knowledge"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
+                        <SelectValue placeholder={dict.register.selectLevel} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Beginner">{dict.register.levelBeginner}</SelectItem>
+                        <SelectItem value="Intermediate">{dict.register.levelIntermediate}</SelectItem>
+                        <SelectItem value="Advanced">{dict.register.levelAdvanced}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.computer_knowledge && <p className="text-sm text-destructive">{errors.computer_knowledge.message}</p>}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.socialMediaKnowledge}</Label>
+                <Controller
+                  control={control}
+                  name="social_media_knowledge"
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
+                        <SelectValue placeholder={dict.register.selectLevel} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Beginner">{dict.register.levelBeginner}</SelectItem>
+                        <SelectItem value="Intermediate">{dict.register.levelIntermediate}</SelectItem>
+                        <SelectItem value="Advanced">{dict.register.levelAdvanced}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.social_media_knowledge && <p className="text-sm text-destructive">{errors.social_media_knowledge.message}</p>}
+              </div>
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.computerKnowledge}</Label>
-              <Controller
-                control={control}
-                name="computer_knowledge"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value ?? null}>
-                    <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
-                      <SelectValue placeholder={dict.register.selectLevel} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Beginner">{dict.register.levelBeginner}</SelectItem>
-                      <SelectItem value="Intermediate">{dict.register.levelIntermediate}</SelectItem>
-                      <SelectItem value="Advanced">{dict.register.levelAdvanced}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.socialMediaKnowledge}</Label>
-              <Controller
-                control={control}
-                name="social_media_knowledge"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value ?? null}>
-                    <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
-                      <SelectValue placeholder={dict.register.selectLevel} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Beginner">{dict.register.levelBeginner}</SelectItem>
-                      <SelectItem value="Intermediate">{dict.register.levelIntermediate}</SelectItem>
-                      <SelectItem value="Advanced">{dict.register.levelAdvanced}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* 3. Skills & Interests */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
-        <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section3Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
-          <CardDescription>{dict.register.section3Desc}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div className="space-y-3">
-            <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.areasOfInterest}</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-[#FEF5EB]/30 rounded-lg border border-zinc-200 dark:border-zinc-800">
-              {WORK_INTERESTS.map((interest) => (
-                <div key={interest} className="flex items-center space-x-3">
-                  <Controller
-                    control={control}
-                    name="work_interests"
-                    render={({ field }) => (
-                      <Checkbox
-                        id={`interest-${interest}`}
-                        className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
-                        checked={field.value?.includes(interest)}
-                        onCheckedChange={(checked) => {
-                          const current = field.value || [];
-                          const updated = checked
-                            ? [...current, interest]
-                            : current.filter((v) => v !== interest);
-                          field.onChange(updated);
-                        }}
-                      />
-                    )}
-                  />
-                  <Label htmlFor={`interest-${interest}`} className="font-medium cursor-pointer text-base">
-                    {interest}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Label className="block text-zinc-800 dark:text-zinc-200">{dict.register.nssConnected}</Label>
-            <Controller
-              control={control}
-              name="nss_ncc_connected"
-              render={({ field }) => (
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  value={field.value ?? null}
-                  className="flex gap-8"
-                >
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="Yes" id="nss-yes" className="w-5 h-5 text-[#0B3C5D]" />
-                    <Label htmlFor="nss-yes" className="font-medium cursor-pointer text-base">{dict.register.yes}</Label>
+        {/* 3. Skills & Interests */}
+        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+          <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section3Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardDescription>{dict.register.section3Desc}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="space-y-3">
+              <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.areasOfInterest}</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-[#FEF5EB]/30 rounded-lg border border-zinc-200 dark:border-zinc-800">
+                {WORK_INTERESTS.map((interest) => (
+                  <div key={interest} className="flex items-center space-x-3">
+                    <Controller
+                      control={control}
+                      name="work_interests"
+                      render={({ field }) => (
+                        <Checkbox
+                          id={`interest-${interest}`}
+                          className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
+                          checked={field.value?.includes(interest) || false}
+                          onCheckedChange={(checked) => {
+                            const current = field.value || [];
+                            const updated = checked
+                              ? [...current, interest]
+                              : current.filter((v) => v !== interest);
+                            field.onChange(updated);
+                          }}
+                        />
+                      )}
+                    />
+                    <Label htmlFor={`interest-${interest}`} className="font-medium cursor-pointer text-base">
+                      {interest}
+                    </Label>
                   </div>
-                  <div className="flex items-center space-x-3">
-                    <RadioGroupItem value="No" id="nss-no" className="w-5 h-5 text-[#0B3C5D]" />
-                    <Label htmlFor="nss-no" className="font-medium cursor-pointer text-base">{dict.register.no}</Label>
-                  </div>
-                </RadioGroup>
-              )}
-            />
-          </div>
-
-          {formValues.nss_ncc_connected === "Yes" && (
-            <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-              <Label htmlFor="organization_details" className="text-zinc-800 dark:text-zinc-200">{dict.register.orgDetails}</Label>
-              <Input id="organization_details" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("organization_details")} />
-              {errors.organization_details && <p className="text-sm text-destructive">{errors.organization_details.message}</p>}
+                ))}
+              </div>
+              {errors.work_interests && <p className="text-sm text-destructive">{errors.work_interests.message}</p>}
             </div>
-          )}
-        </CardContent>
-      </Card>
 
-      {/* 4. Availability */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
-        <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section4Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
-          <CardDescription>{dict.register.section4Desc}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <Label className="block text-zinc-800 dark:text-zinc-200">{dict.register.commit6Months}</Label>
+              <Label className="block text-zinc-800 dark:text-zinc-200">{dict.register.nssConnected}</Label>
               <Controller
                 control={control}
-                name="available_6_months"
+                name="nss_ncc_connected"
                 render={({ field }) => (
                   <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value ?? null}
+                    onValueChange={(val) => {
+                      field.onChange(val);
+                      if (val === "No") {
+                        setValue("organization_details", "", { shouldValidate: true });
+                      }
+                    }}
+                    value={field.value ?? undefined}
                     className="flex gap-8"
                   >
                     <div className="flex items-center space-x-3">
-                      <RadioGroupItem value="Yes" id="commit-yes" className="w-5 h-5 text-[#0B3C5D]" />
-                      <Label htmlFor="commit-yes" className="font-medium cursor-pointer text-base">{dict.register.yes}</Label>
+                      <RadioGroupItem value="Yes" id="nss-yes" className="w-5 h-5 text-[#0B3C5D]" />
+                      <Label htmlFor="nss-yes" className="font-medium cursor-pointer text-base">{dict.register.yes}</Label>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <RadioGroupItem value="No" id="commit-no" className="w-5 h-5 text-[#0B3C5D]" />
-                      <Label htmlFor="commit-no" className="font-medium cursor-pointer text-base">{dict.register.no}</Label>
+                      <RadioGroupItem value="No" id="nss-no" className="w-5 h-5 text-[#0B3C5D]" />
+                      <Label htmlFor="nss-no" className="font-medium cursor-pointer text-base">{dict.register.no}</Label>
                     </div>
                   </RadioGroup>
                 )}
               />
+              {errors.nss_ncc_connected && <p className="text-sm text-destructive">{errors.nss_ncc_connected.message}</p>}
             </div>
-          </div>
 
-          {formValues.available_6_months === "Yes" && (
+            {formValues.nss_ncc_connected === "Yes" && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                <Label htmlFor="organization_details" className="text-zinc-800 dark:text-zinc-200">{dict.register.orgDetails}</Label>
+                <Input id="organization_details" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("organization_details")} />
+                {errors.organization_details && <p className="text-sm text-destructive">{errors.organization_details.message}</p>}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* 4. Availability */}
+        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+          <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section4Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardDescription>{dict.register.section4Desc}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <Label className="block text-zinc-800 dark:text-zinc-200">{dict.register.commit6Months}</Label>
+                <Controller
+                  control={control}
+                  name="available_6_months"
+                  render={({ field }) => (
+                    <RadioGroup
+                      onValueChange={(val) => {
+                        field.onChange(val);
+                        if (val === "No") {
+                          setValue("weekly_time", "", { shouldValidate: true });
+                          setValue("available_time", [], { shouldValidate: true });
+                        }
+                      }}
+                      value={field.value ?? undefined}
+                      className="flex gap-8"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <RadioGroupItem value="Yes" id="commit-yes" className="w-5 h-5 text-[#0B3C5D]" />
+                        <Label htmlFor="commit-yes" className="font-medium cursor-pointer text-base">{dict.register.yes}</Label>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <RadioGroupItem value="No" id="commit-no" className="w-5 h-5 text-[#0B3C5D]" />
+                        <Label htmlFor="commit-no" className="font-medium cursor-pointer text-base">{dict.register.no}</Label>
+                      </div>
+                    </RadioGroup>
+                  )}
+                />
+                {errors.available_6_months && <p className="text-sm text-destructive">{errors.available_6_months.message}</p>}
+              </div>
+            </div>
+
+            {formValues.available_6_months === "Yes" && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="weekly_time" className="text-zinc-800 dark:text-zinc-200">{dict.register.weeklyTime}</Label>
+                    <Controller
+                      control={control}
+                      name="weekly_time"
+                      render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value || ""}>
+                          <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
+                            <SelectValue placeholder={dict.register.selectTime} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="2-4 hours">2-4 hours</SelectItem>
+                            <SelectItem value="5-8 hours">5-8 hours</SelectItem>
+                            <SelectItem value="8-12 hours">8-12 hours</SelectItem>
+                            <SelectItem value="More than 12 hours">More than 12 hours</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.weekly_time && <p className="text-sm text-destructive">{errors.weekly_time.message}</p>}
+                  </div>
+                </div>
+
+                <div className="space-y-3 animate-in fade-in slide-in-from-top-2 mt-6">
+                  <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.preferredTimes}</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-[#FEF5EB]/30 rounded-lg border border-zinc-200 dark:border-zinc-800">
+                    {AVAILABLE_TIMES.map((time) => (
+                      <div key={time} className="flex items-center space-x-3">
+                        <Controller
+                          control={control}
+                          name="available_time"
+                          render={({ field }) => (
+                            <Checkbox
+                              id={`time-${time}`}
+                              className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
+                              checked={field.value?.includes(time) || false}
+                              onCheckedChange={(checked) => {
+                                const current = field.value || [];
+                                const updated = checked
+                                  ? [...current, time]
+                                  : current.filter((v) => v !== time);
+                                field.onChange(updated);
+                              }}
+                            />
+                          )}
+                        />
+                        <Label htmlFor={`time-${time}`} className="font-medium cursor-pointer text-base">
+                          {time}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  {errors.available_time && <p className="text-sm text-destructive">{errors.available_time.message}</p>}
+                </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* 5. Motivation & Declaration */}
+        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+          <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
+            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section5Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardDescription>{dict.register.section5Desc}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="space-y-2">
+              <Label htmlFor="motivation" className="text-zinc-800 dark:text-zinc-200">{dict.register.motivation}</Label>
+              <Textarea 
+                id="motivation" 
+                className="min-h-[120px] bg-[#FEF5EB]/30 text-base resize-none"
+                {...register("motivation")} 
+              />
+              {errors.motivation && <p className="text-sm text-destructive">{errors.motivation.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="district_opportunity" className="text-zinc-800 dark:text-zinc-200">{dict.register.districtOpportunity}</Label>
+              <Textarea 
+                id="district_opportunity" 
+                className="bg-[#FEF5EB]/30 text-base resize-none min-h-[80px]"
+                {...register("district_opportunity")} 
+              />
+              {errors.district_opportunity && <p className="text-sm text-destructive">{errors.district_opportunity.message}</p>}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Button 
+          type="submit" 
+          size="lg" 
+          className="w-full text-lg h-14 bg-[#0B3C5D] hover:bg-[#0B3C5D]/90 text-white shadow-md transition-all rounded-md font-medium" 
+          disabled={isPending}
+        >
+          {isPending ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2">
-                <div className="space-y-2">
-                  <Label htmlFor="weekly_time" className="text-zinc-800 dark:text-zinc-200">{dict.register.weeklyTime}</Label>
-                  <Controller
-                    control={control}
-                    name="weekly_time"
-                    render={({ field }) => (
-                      <Select onValueChange={field.onChange} value={field.value ?? null}>
-                        <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
-                          <SelectValue placeholder={dict.register.selectTime} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="2-4 hours">2-4 hours</SelectItem>
-                          <SelectItem value="5-8 hours">5-8 hours</SelectItem>
-                          <SelectItem value="8-12 hours">8-12 hours</SelectItem>
-                          <SelectItem value="More than 12 hours">More than 12 hours</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  {errors.weekly_time && <p className="text-sm text-destructive">{errors.weekly_time.message}</p>}
-                </div>
-              </div>
-
-              <div className="space-y-3 animate-in fade-in slide-in-from-top-2 mt-6">
-                <Label className="text-zinc-800 dark:text-zinc-200">{dict.register.preferredTimes}</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-5 bg-[#FEF5EB]/30 rounded-lg border border-zinc-200 dark:border-zinc-800">
-                  {AVAILABLE_TIMES.map((time) => (
-                    <div key={time} className="flex items-center space-x-3">
-                      <Controller
-                        control={control}
-                        name="available_time"
-                        render={({ field }) => (
-                          <Checkbox
-                            id={`time-${time}`}
-                            className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
-                            checked={field.value?.includes(time)}
-                            onCheckedChange={(checked) => {
-                              const current = field.value || [];
-                              const updated = checked
-                                ? [...current, time]
-                                : current.filter((v) => v !== time);
-                              field.onChange(updated);
-                            }}
-                          />
-                        )}
-                      />
-                      <Label htmlFor={`time-${time}`} className="font-medium cursor-pointer text-base">
-                        {time}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-                {errors.available_time && <p className="text-sm text-destructive">{errors.available_time.message}</p>}
-              </div>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              {dict.register.submitting}
             </>
+          ) : (
+            dict.register.submitBtn
           )}
-        </CardContent>
-      </Card>
+        </Button>
+      </form>
 
-      {/* 5. Motivation & Declaration */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
-        <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section5Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
-          <CardDescription>{dict.register.section5Desc}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6 pt-6">
-          <div className="space-y-2">
-            <Label htmlFor="motivation" className="text-zinc-800 dark:text-zinc-200">{dict.register.motivation}</Label>
-            <Textarea 
-              id="motivation" 
-              className="min-h-[120px] bg-[#FEF5EB]/30 text-base resize-none"
-              {...register("motivation")} 
-            />
-            {errors.motivation && <p className="text-sm text-destructive">{errors.motivation.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="district_opportunity" className="text-zinc-800 dark:text-zinc-200">{dict.register.districtOpportunity}</Label>
-            <Textarea 
-              id="district_opportunity" 
-              className="bg-[#FEF5EB]/30 text-base resize-none min-h-[80px]"
-              {...register("district_opportunity")} 
-            />
-            {errors.district_opportunity && <p className="text-sm text-destructive">{errors.district_opportunity.message}</p>}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Button 
-        type="submit" 
-        size="lg" 
-        className="w-full text-lg h-14 bg-[#0B3C5D] hover:bg-[#0B3C5D]/90 text-white shadow-md transition-all rounded-md font-medium" 
-        disabled={isPending}
-      >
-        {isPending ? (
-          <>
-            <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-            {dict.register.submitting}
-          </>
-        ) : (
-          dict.register.submitBtn
-        )}
-      </Button>
-    </form>
+      {/* DYNAMIC SUBMISSION MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <Card className="w-full max-w-md bg-white dark:bg-zinc-900 shadow-xl border border-zinc-200 dark:border-zinc-800 scale-in-95 duration-200">
+            <CardHeader>
+              <CardTitle className="text-xl text-red-600 dark:text-red-400 font-bold">
+                Submission Already Exists
+              </CardTitle>
+              <CardDescription className="pt-2 text-base text-zinc-600 dark:text-zinc-400">
+                A registration submission associated with this email address has already been received. Multiple entries under the same registration email profile are restricted.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-end pt-2">
+              <Button 
+                onClick={() => setShowModal(false)}
+                className="bg-[#0B3C5D] hover:bg-[#0B3C5D]/90 text-white font-medium px-6 h-11"
+              >
+                Close Window
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
   );
 }
