@@ -27,8 +27,8 @@ export default function HomeBody() {
                 <ShieldCheck size={14} /> {dict.homeNew.badge}
               </div>
               <h1 className="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.05]">
-                {dict.homeNew.titlePart1} <br />
-                <span className="text-[#FF9933]">{dict.homeNew.titlePart2}</span>
+               <span className="text-[#FF9933]"> {dict.homeNew.titlePart1}</span> <br /><span>{dict.homeNew.titlePart3}<br /></span>
+                <span className="text-green-600">{dict.homeNew.titlePart2}</span>
               </h1>
               <p className="text-xl text-slate-700 font-semibold leading-relaxed border-l-4 border-[#138808] pl-6">
                 {dict.homeNew.subtitle}
@@ -42,10 +42,7 @@ export default function HomeBody() {
                   <p className="text-[10px] uppercase font-bold text-slate-500">{dict.homeNew.natureLabel}</p>
                   <p className="text-lg font-black text-slate-800">{dict.homeNew.natureVal}</p>
                 </div>
-                <div className="bg-slate-50 p-4 border border-slate-200">
-                  <p className="text-[10px] uppercase font-bold text-slate-500">{dict.homeNew.engageLabel}</p>
-                  <p className="text-lg font-black text-slate-800">{dict.homeNew.engageVal}</p>
-                </div>
+              
               </div>
               <div className="flex flex-wrap gap-4 pt-2">
                 <Button  className="bg-[#138808] hover:bg-green-800 text-white font-black h-14 px-10 rounded-none text-lg">
