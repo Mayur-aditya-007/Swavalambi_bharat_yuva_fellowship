@@ -72,6 +72,7 @@ export default function HomeBody() {
           </div>
         </div>
       </section>
+      
 
       {/* SECTION 2: ROLES & RESPONSIBILITIES */}
       <section className="py-20 container mx-auto px-4 lg:px-8">

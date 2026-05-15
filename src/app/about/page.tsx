@@ -125,7 +125,7 @@ export default function AboutPage() {
       <section className="py-24 container mx-auto px-6">
         <div className="flex flex-col lg:flex-row gap-16 items-center">
           <div className="lg:w-1/2">
-            <img src="/chhattisgarh-focus.png" alt="SBA CG Focus" className="w-full shadow-2xl border-8 border-white" />
+            <img src="/hero-image.png" alt="SBA CG Focus" className="w-full shadow-2xl border-8 border-white" />
           </div>
           <div className="lg:w-1/2 space-y-8">
             <h2 className="text-4xl font-black text-slate-900 underline decoration-[#FF9933] underline-offset-8">

@@ -31,7 +31,7 @@ export function Footer() {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-white p-1">
-                <img src="/sba-logo.png" alt="SBA Logo" className="w-full h-full object-contain" />
+                <img src="/sba-logo.jpeg" alt="SBA Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h3 className="font-black text-lg leading-tight uppercase tracking-tighter">
