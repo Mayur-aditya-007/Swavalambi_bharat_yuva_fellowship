@@ -119,7 +119,7 @@ export function Footer() {
                 <MapPin size={18} className="text-[#138808] mt-1 shrink-0" />
                 <div>
                   <p className="text-xs text-slate-500 font-bold uppercase">{dict.footer.location}</p>
-                  <p className="text-sm font-black tracking-tight uppercase">{dict.footer.province}</p> 
+                  <p className="text-sm font-black tracking-tight uppercase">{dict.footer.province2}</p> 
                 </div>
               </div>
             </div>

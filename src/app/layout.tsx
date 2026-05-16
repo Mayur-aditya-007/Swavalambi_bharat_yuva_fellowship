@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Mukta } from "next/font/google";
 import { Header } from "@/components/header";
 import { DictionaryProvider } from "@/components/dictionary-provider";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import "./globals.css";
 import { Footer } from "@/components/footer";
@@ -43,6 +44,7 @@ export default async function RootLayout({
           <Header dict={dict} lang={lang} />
 
           <main className="flex-1 flex flex-col">{children}</main>
+          <WhatsAppButton />
           <Footer />
         </DictionaryProvider>
       </body>
