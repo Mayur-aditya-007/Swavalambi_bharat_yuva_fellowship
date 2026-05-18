@@ -57,7 +57,6 @@ export default function FellowshipPage() {
 
           <div className="lg:col-span-8 grid md:grid-cols-2 gap-4">
             {[
-              { t: dict.fellowship.c1T, v: dict.fellowship.c1V, d: dict.fellowship.c1D },
               { t: dict.fellowship.c2T, v: dict.fellowship.c2V, d: dict.fellowship.c2D },
               { t: dict.fellowship.c3T, v: dict.fellowship.c3V, d: dict.fellowship.c3D },
               { t: dict.fellowship.c4T, v: dict.fellowship.c4V, d: dict.fellowship.c4D }
@@ -144,9 +143,9 @@ export default function FellowshipPage() {
               </div>
             </div>
             <div className="flex flex-col gap-4 w-full lg:w-auto">
-              <Button size="lg" className="bg-white text-[#138808] hover:bg-slate-100 font-black h-16 px-12 rounded-none text-xl shadow-2xl transition-transform hover:scale-105 active:scale-95">
+            <a href="/register">  <Button size="lg" className="bg-white text-[#138808] hover:bg-slate-100 font-black h-16 px-12 rounded-none text-xl shadow-2xl transition-transform hover:scale-105 active:scale-95">
                 {dict.fellowship.applyBtn} <ArrowRight className="ml-2" />
-              </Button>
+              </Button></a>
               <p className="text-[10px] text-center font-bold opacity-60 uppercase tracking-[0.2em]">{dict.fellowship.batchText}</p>
             </div>
           </div>
