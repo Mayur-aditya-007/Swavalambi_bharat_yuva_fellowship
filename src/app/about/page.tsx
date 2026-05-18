@@ -2,9 +2,10 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { 
   Target, Globe, Zap, Users, MapPin, 
-  ShieldCheck, ArrowRight, Handshake, 
+  ShieldCheck, ArrowRight, Handshake, Network,Cpu,Lightbulb,
   TrendingUp, Landmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -78,48 +79,93 @@ export default function AboutPage() {
       </section>
 
       {/* 3. MYSBA DIGITAL ECOSYSTEM */}
-      <section className="py-24 bg-slate-900 text-white relative">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div className="space-y-8">
-              <h2 className="text-4xl font-black leading-tight uppercase tracking-tighter">
-                {dict.about.digiTitle1} <br />
-                <span className="text-[#FF9933]">{dict.about.digiTitle2}</span>
+      <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
+      {/* Background ambient radial lights */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#FF9933]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#138808]/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          
+          {/* Left Column: SJM Initiative & Core SBA Objectives */}
+          <div className="lg:col-span-7 space-y-8">
+            <div className="space-y-3">
+              <span className="text-xs font-black tracking-widest text-[#FF9933] uppercase block">
+                {dict.about.sectionSubtitle}
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black leading-tight uppercase tracking-tighter">
+                {dict.about.sectionTitle1} <br />
+                <span className="text-[#FF9933]">{dict.about.sectionTitle2}</span>
               </h2>
-              <p className="text-slate-400 text-lg leading-relaxed font-medium">
-                {dict.about.digiDesc}
-              </p>
-              <div className="space-y-6">
-                {[
-                  dict.about.p1,
-                  dict.about.p2,
-                  dict.about.p3
-                ].map((point, i) => (
-                  <div key={i} className="flex gap-4 items-start bg-white/5 p-4 border border-white/10">
-                    <ShieldCheck className="text-[#138808] shrink-0" />
-                    <p className="text-sm font-bold text-slate-200">{point}</p>
-                  </div>
-                ))}
-              </div>
+              <div className="w-20 h-1 bg-[#138808] mt-2"></div>
             </div>
-            <div className="bg-white/5 p-12 rounded-none border border-white/10 relative">
-              <h3 className="text-2xl font-bold text-[#FF9933] mb-8 uppercase tracking-widest">{dict.about.infraTitle}</h3>
-              <div className="grid gap-8">
-                <div className="space-y-2">
-                  <p className="text-xs font-black text-[#138808] uppercase tracking-widest">{dict.about.infraPT1}</p>
-                  <h4 className="text-xl font-bold italic">{dict.about.infraPT2}</h4>
-                  <p className="text-sm text-slate-400">{dict.about.infraPT3}</p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-xs font-black text-[#138808] uppercase tracking-widest">{dict.about.infraES1}</p>
-                  <h4 className="text-xl font-bold italic">{dict.about.infraES2}</h4>
-                  <p className="text-sm text-slate-400">{dict.about.infraES3}</p>
-                </div>
+
+            {/* SJM Paragraph - Kept exactly as provided */}
+            <p className="text-slate-300 text-lg leading-relaxed font-medium bg-white/5 p-6 border-l-4 border-[#FF9933] rounded-r-md">
+              Sawadeshi Jagran Manch (SJM) is working in economic, social, and political spheres have taken a collective initiative with 10-12 economic and social organization to arise ‘Swavlambi Bharat Abhiyan’(SBA). SBA is a concerted effort to generate employment opportunities and encourage entrepreneurship by equipping and enabling the youth of the country in several fields.
+            </p>
+
+            {/* SBA Paragraph - Kept exactly as provided */}
+            <div className="flex gap-4 items-start bg-white/5 p-6 border border-white/10 rounded-md hover:border-white/20 transition-all">
+              <Network className="text-[#138808] w-8 h-8 shrink-0 mt-1" />
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold text-slate-100 uppercase tracking-wide">
+                  {dict.about.sbaTitle}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-300 font-medium">
+                  SBA - Swavalambi Bharat Abhiyan is an initiative to spread awareness among people about startups, entrepreneurship, etc. Its main goal is to provide employment to each and every citizen of India by 2030 and make the nation self-reliant and independent.
+                </p>
               </div>
             </div>
           </div>
+
+          {/* Right Column: MySBA Platform Features Card */}
+          <div className="lg:col-span-5 bg-gradient-to-b from-white/10 to-white/5 p-8 md:p-10 rounded-lg border border-white/10 shadow-2xl relative">
+            <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-12 h-12 bg-[#FF9933]/10 rounded-full blur-md" />
+            
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <span className="text-xs font-black tracking-widest text-[#138808] uppercase block">
+                  Ecosystem Platform
+                </span>
+                <h3 className="text-2xl font-black text-[#FF9933] uppercase tracking-wide">
+                  {dict.about.mySbaTitle}
+                </h3>
+              </div>
+              
+              {/* MySBA Content - Kept exactly as provided */}
+              <p className="text-sm leading-relaxed text-slate-300 font-medium border-b border-white/10 pb-6">
+                MySBA - SBA introduce MySBA (Digital Platform) to the youth of India. To create awareness and inspire them to take up challenges, face their fears, and make a difference in their surroundings. To help them shape the path they choose for themselves. it is an initiative to spread awareness among people about start-ups, entrepreneurship, etc. Its main goal is to provide employment to each and every citizen of India by 2030 and make the nation self-reliant and independent. MySBA is a Web portal and an ecosystem with “Under One Umbrella model” to facilitate potential Entrepreneurs with the help of Artificial Intelligence, Digital Surveillance, and E-Commerce.
+              </p>
+
+              {/* Ecosystem Architecture Badges */}
+              <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="space-y-2 text-center bg-white/5 p-3 rounded border border-white/5">
+                  <Cpu className="w-5 h-5 mx-auto text-[#FF9933]" />
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight">
+                    {dict.about.infraLabel1}
+                  </p>
+                </div>
+                <div className="space-y-2 text-center bg-white/5 p-3 rounded border border-white/5">
+                  <ShieldCheck className="w-5 h-5 mx-auto text-white" />
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight">
+                    {dict.about.infraLabel2}
+                  </p>
+                </div>
+                <div className="space-y-2 text-center bg-white/5 p-3 rounded border border-white/5">
+                  <Lightbulb className="w-5 h-5 mx-auto text-[#138808]" />
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider leading-tight">
+                    {dict.about.infraLabel3}
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* 4. CHHATTISGARH PROVINCE FOCUS */}
       <section className="py-24 container mx-auto px-6">
@@ -143,10 +189,16 @@ export default function AboutPage() {
                 <h5 className="font-black text-[#138808] uppercase text-xs mb-2">{dict.about.sgLabel}</h5>
                 <p className="text-sm font-bold text-slate-800 tracking-tight">{dict.about.sgDesc}</p>
               </div>
-            </div>
-            <Button size="lg" className="bg-[#000080] hover:bg-blue-900 text-white font-bold px-10 h-16 rounded-none uppercase tracking-widest">
-              {dict.about.joinBtn} <ArrowRight className="ml-2" />
-            </Button>
+            </div><Link href="https://mysba.co.in">
+  <Button 
+    size="lg" 
+    className="bg-[#000080] hover:bg-blue-900 text-white font-bold px-10 h-16 rounded-none uppercase tracking-widest"
+  >
+    <span>
+      {dict.about.joinBtn} <ArrowRight className="ml-2 inline-block" />
+    </span>
+  </Button>
+</Link>
           </div>
         </div>
       </section>

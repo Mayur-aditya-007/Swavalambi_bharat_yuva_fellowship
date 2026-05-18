@@ -42,6 +42,10 @@ export default function HomeBody() {
                   <p className="text-[10px] uppercase font-bold text-slate-500">{dict.homeNew.natureLabel}</p>
                   <p className="text-lg font-black text-slate-800">{dict.homeNew.natureVal}</p>
                 </div>
+                <div className="bg-slate-50 p-4 border border-slate-200">
+                  <p className="text-[10px] uppercase font-bold text-slate-500">{dict.homeNew.engageLabel}</p>
+                  <p className="text-lg font-black text-slate-800">{dict.homeNew.engageVal}</p>
+                </div>
               
               </div>
               <div className="flex flex-wrap gap-4 pt-2">

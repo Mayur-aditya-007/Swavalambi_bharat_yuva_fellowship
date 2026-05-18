@@ -57,7 +57,7 @@ export function Header({ dict, lang }: { dict: Dictionary; lang: "en" | "hi" }) 
                   <Link 
                     key={item.href}
                     href={item.href} 
-                    className="text-slate-700 font-bold text-sm hover:text-[#000080] transition-colors camelcase tracking-tight"
+                    className="text-slate-700 font-bold text-sm hover:text-[#000080] transition-colors tracking-tight"
                   >
                     {item.name}
                   </Link>

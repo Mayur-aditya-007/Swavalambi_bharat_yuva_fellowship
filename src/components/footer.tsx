@@ -48,8 +48,26 @@ export function Footer() {
             {/* SOCIAL ICONS REPLACED WITH SHARE/GLOBE */}
             <div className="flex gap-4">
               <Link href="#" className="p-2 bg-white/5 hover:bg-[#FF9933] transition-all rounded" aria-label="Website"><Globe size={18} /></Link>
-              <Link href="#" className="p-2 bg-white/5 hover:bg-[#FF9933] transition-all rounded" aria-label="Social Media"><Share2 size={18} /></Link>
-            </div>
+<button
+  onClick={() => {
+    if (navigator.share) {
+      navigator.share({
+        title: "Swavalambi Bharat Yuva Fellowship",
+        text: "Join the Movement: Swavalambi Bharat Yuva Fellowship Registration is active!",
+        url: window.location.href,
+      })
+      .catch((error) => console.log("Error sharing:", error));
+    } else {
+      // Fallback: Copy link to clipboard if Share API isn't supported
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
+    }
+  }}
+  className="p-2 bg-white/5 hover:bg-[#FF9933] transition-all rounded text-white"
+  aria-label="Share page"
+>
+  <Share2 size={18} />
+</button>            </div>
           </div>
 
           <div className="space-y-6">
