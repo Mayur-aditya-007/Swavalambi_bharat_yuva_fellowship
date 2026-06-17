@@ -1,5 +1,5 @@
 import { getDailyReports } from "./actions";
-import ExportButton from "@/components/ExportButton"; // Adjust path if needed
+import ExportReportsButton from "@/components/ExportReportsButton"; // Adjust path if needed
 import {
   Card,
   CardContent,
@@ -31,7 +31,11 @@ export default async function AdminReportDashboard() {
             Monitor daily metrics, field milestones, and real-time impact metrics from active fellows.
           </p>
         </div>
-        <ExportButton data={reports} />
+        
+        {/* Integrated the new specialized Excel Report Exporter */}
+        <div className="flex items-center gap-2">
+          <ExportReportsButton data={reports} text="Download Reports" />
+        </div>
       </div>
 
       {/* Aggregate Metric Stats Counter Grid */}
@@ -139,7 +143,7 @@ export default async function AdminReportDashboard() {
                         </div>
                       </td>
 
-                      {/* Native Top-Layer Dialog Component (Fixes overflow container scrolling cutout boundaries) */}
+                      {/* Native Top-Layer Dialog Component (Bypasses parent scroll boundaries flawlessly) */}
                       <td className="p-4 text-center">
                         <button
                           type="button"
@@ -268,7 +272,7 @@ export default async function AdminReportDashboard() {
                                 </p>
                               </div>
 
-                              {/* Proofs/Files Attached Preview Box Container */}
+                              {/* Proofs/Files Attached Inline Preview Gallery */}
                               {report.proof_urls && report.proof_urls.length > 0 && (
                                 <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
                                   <b className="text-zinc-500 dark:text-zinc-400 block text-xs font-semibold mb-2">
@@ -299,7 +303,7 @@ export default async function AdminReportDashboard() {
                                               />
                                             </div>
                                           ) : (
-                                            /* Non-Image Asset Block Layout Fallback (e.g. PDFs, CSVs) */
+                                            /* Non-Image Asset Layout Fallback (e.g., PDFs) */
                                             <div className="p-3 flex items-center gap-2 text-zinc-600 dark:text-zinc-400 min-h-[60px]">
                                               <span className="text-xl">📄</span>
                                               <div className="overflow-hidden">
