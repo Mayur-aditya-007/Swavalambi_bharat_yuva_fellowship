@@ -43,7 +43,7 @@ export default function AdminLayout({
             </Link>
             
             <Link
-              href="/admin/report"
+              href="/admin/reports"
               className={`px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none ${
                 isReportsActive
                   ? "bg-white dark:bg-zinc-950 text-[#0B3C5D] dark:text-blue-400 shadow-sm"
