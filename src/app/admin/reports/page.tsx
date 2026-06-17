@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminReportDashboard() {
   const reports = await getDailyReports();
 
-  // Aggregate aggregate metrics for quick review cards
+  // Aggregate operational statistics indicators
   const totalReports = reports?.length ?? 0;
   const totalEntrepreneurs = reports?.reduce((acc, r) => acc + (r.entrepreneurs_contacted || 0), 0) ?? 0;
   const totalStudents = reports?.reduce((acc, r) => acc + (r.students_contacted || 0), 0) ?? 0;
@@ -21,7 +21,7 @@ export default async function AdminReportDashboard() {
 
   return (
     <div className="container mx-auto py-10 px-4 space-y-6">
-      {/* Header section */}
+      {/* Upper Layout Header Panel */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
@@ -34,7 +34,7 @@ export default async function AdminReportDashboard() {
         <ExportButton data={reports} />
       </div>
 
-      {/* Aggregate Metric Stats Grid */}
+      {/* Aggregate Metric Stats Counter Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="shadow-sm">
           <CardContent className="p-4 flex flex-col justify-center">
@@ -62,7 +62,7 @@ export default async function AdminReportDashboard() {
         </Card>
       </div>
 
-      {/* Main Table Card */}
+      {/* Main Ledger Table Card Component */}
       <Card className="border-t-4 border-t-[#0B3C5D] bg-white dark:bg-zinc-900 shadow-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-[#0B3C5D] dark:text-blue-400">
@@ -97,14 +97,14 @@ export default async function AdminReportDashboard() {
                       key={report.id}
                       className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors"
                     >
-                      {/* Fellow Details */}
+                      {/* Fellow Profile Data Segment */}
                       <td className="p-4 font-medium text-zinc-900 dark:text-white">
                         <div>{report.fellow_name}</div>
                         <div className="text-xs text-zinc-400 font-normal mt-0.5">{report.district}</div>
                         <div className="text-xs text-zinc-500 font-mono font-normal">WA: {report.whatsapp}</div>
                       </td>
 
-                      {/* Reporting Timeline */}
+                      {/* Timeline Indicators */}
                       <td className="p-4 text-zinc-600 dark:text-zinc-400">
                         <div className="font-semibold">{report.report_date}</div>
                         <span className="text-xs bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded text-zinc-500">
@@ -112,7 +112,7 @@ export default async function AdminReportDashboard() {
                         </span>
                       </td>
 
-                      {/* Work Scope */}
+                      {/* Qualitative Work Summary Preview */}
                       <td className="p-4 text-zinc-600 dark:text-zinc-400 max-w-[240px]">
                         <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate" title={report.college_name}>
                           {report.college_name}
@@ -129,7 +129,7 @@ export default async function AdminReportDashboard() {
                         </div>
                       </td>
 
-                      {/* Core Output Metrics Status Grid */}
+                      {/* Numeric Operational Metrics Stream Grid */}
                       <td className="p-4 text-xs">
                         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-zinc-600 dark:text-zinc-400">
                           <div>💼 Entrepreneurs: <span className="font-semibold text-zinc-900 dark:text-white">{report.entrepreneurs_contacted ?? 0}</span></div>
@@ -139,19 +139,39 @@ export default async function AdminReportDashboard() {
                         </div>
                       </td>
 
-                      {/* Detailed Record Pop-Up Modal Component using HTML Summary Details */}
+                      {/* Native Top-Layer Dialog Component (Fixes overflow container scrolling cutout boundaries) */}
                       <td className="p-4 text-center">
-                        <details className="relative inline-block text-left group">
-                          <summary className="list-none outline-none cursor-pointer px-3 py-1 text-xs font-semibold rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 select-none">
-                            View All Details
-                          </summary>
-                          <div className="absolute right-0 mt-2 w-[340px] sm:w-[540px] bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl z-50 p-5 text-left text-zinc-800 dark:text-zinc-200 space-y-4 max-h-[480px] overflow-y-auto">
-                            <h4 className="font-bold text-base border-b pb-2 text-[#0B3C5D] dark:text-blue-400 flex justify-between items-center">
-                              <span>Metric Inspector Portfolio</span>
-                              <span className="text-xs font-mono font-normal text-zinc-400">{report.report_date}</span>
-                            </h4>
+                        <button
+                          type="button"
+                          // @ts-ignore
+                          onClick={(e) => e.currentTarget.nextElementSibling?.showModal()}
+                          className="outline-none cursor-pointer px-3 py-1 text-xs font-semibold rounded border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 select-none"
+                        >
+                          View All Details
+                        </button>
+                        
+                        <dialog
+                          className="backdrop:bg-black/50 p-0 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 w-[92vw] max-w-[560px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+                          // @ts-ignore
+                          onClick={(e) => e.target === e.currentTarget && e.currentTarget.close()}
+                        >
+                          <div className="p-5 space-y-4 max-h-[85vh] overflow-y-auto text-left">
+                            <div className="flex justify-between items-center border-b pb-2">
+                              <h4 className="font-bold text-base text-[#0B3C5D] dark:text-blue-400 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                <span>Metric Inspector Portfolio</span>
+                                <span className="text-xs font-mono font-normal text-zinc-400">({report.fellow_name})</span>
+                              </h4>
+                              <button 
+                                type="button"
+                                // @ts-ignore
+                                onClick={(e) => e.currentTarget.closest('dialog').close()}
+                                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-lg font-bold px-2"
+                              >
+                                ✕
+                              </button>
+                            </div>
 
-                            {/* Additional Metric Counter Indicators */}
+                            {/* Additional Horizontal Sub-Metric Badge Grid */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-[11px] bg-zinc-50 dark:bg-zinc-900 p-2 rounded-lg">
                               <div><span className="block text-zinc-400">Success Stories</span><b>{report.success_stories ?? 0}</b></div>
                               <div><span className="block text-zinc-400">Schemes Studied</span><b>{report.schemes_studied ?? 0}</b></div>
@@ -159,7 +179,7 @@ export default async function AdminReportDashboard() {
                               <div><span className="block text-zinc-400">Meetings</span><b>{report.meetings_attended ?? 0}</b></div>
                             </div>
 
-                            {/* Conditional segments based on what field forms were answered */}
+                            {/* Conditional Display Blocks Depending on Checkbox Selections */}
                             <div className="space-y-3 text-xs">
                               {/* 1. Business Section */}
                               {report.business_contacted && (
@@ -168,7 +188,7 @@ export default async function AdminReportDashboard() {
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px]">
                                     <div><b>Name:</b> {report.business_name || "N/A"}</div>
                                     <div><b>Category:</b> {report.business_category || "N/A"}</div>
-                                    <div><b>Contact Person:</b> {report.contact_person} ({report.contact_number || "N/A"})</div>
+                                    <div><b>Contact:</b> {report.contact_person} ({report.contact_number || "N/A"})</div>
                                     <div className="sm:col-span-2"><b>Observations:</b> {report.business_observation}</div>
                                   </div>
                                 </div>
@@ -180,7 +200,7 @@ export default async function AdminReportDashboard() {
                                   <h5 className="font-bold text-blue-800 dark:text-blue-400 mb-1">🏛️ Government Scheme Portfolio</h5>
                                   <div className="text-[11px] space-y-1">
                                     <div><b>Scheme Target:</b> {report.scheme_name} ({report.scheme_category})</div>
-                                    <div><b>Actions Taken:</b> {Array.isArray(report.scheme_work_types) ? report.scheme_work_types.join(", ") : String(report.scheme_work_types)}</div>
+                                    <div><b>Actions:</b> {Array.isArray(report.scheme_work_types) ? report.scheme_work_types.join(", ") : String(report.scheme_work_types)}</div>
                                     <div><b>Details:</b> {report.scheme_details}</div>
                                   </div>
                                 </div>
@@ -204,7 +224,7 @@ export default async function AdminReportDashboard() {
                                 </div>
                               )}
 
-                              {/* 4. Social Media Metrics Breakdown */}
+                              {/* 4. Social Media Performance Counters */}
                               {report.social_media_work && (
                                 <div className="p-2.5 rounded border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900/40 text-[11px]">
                                   <h5 className="font-bold text-zinc-700 dark:text-zinc-300 mb-1">📱 Digital Engine Footprint</h5>
@@ -225,7 +245,7 @@ export default async function AdminReportDashboard() {
                               )}
                             </div>
 
-                            {/* Qualitative Operational Summary Text blocks */}
+                            {/* Qualitative Operational Summary Descriptions */}
                             <div className="border-t pt-3 text-xs space-y-2">
                               <div>
                                 <b className="text-[#0B3C5D] dark:text-blue-400 block font-semibold">Key Achievement of the Day:</b>
@@ -248,28 +268,82 @@ export default async function AdminReportDashboard() {
                                 </p>
                               </div>
 
-                              {/* Proofs Files Attached URLs */}
+                              {/* Proofs/Files Attached Preview Box Container */}
                               {report.proof_urls && report.proof_urls.length > 0 && (
-                                <div className="pt-1">
-                                  <b className="text-zinc-400 block mb-1">Uploaded Operational Evidence ({report.proof_urls.length}):</b>
-                                  <div className="flex flex-col gap-1">
-                                    {report.proof_urls.map((url: string, index: number) => (
-                                      <a
-                                        key={index}
-                                        href={url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-xs text-blue-600 dark:text-blue-400 underline hover:text-blue-800 truncate block"
-                                      >
-                                        Evidence Document #{index + 1}
-                                      </a>
-                                    ))}
+                                <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                                  <b className="text-zinc-500 dark:text-zinc-400 block text-xs font-semibold mb-2">
+                                    Uploaded Operational Evidence ({report.proof_urls.length}):
+                                  </b>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {report.proof_urls.map((url: string, index: number) => {
+                                      const lowerUrl = url.toLowerCase();
+                                      const isImage = lowerUrl.includes(".jpg") || 
+                                                      lowerUrl.includes(".jpeg") || 
+                                                      lowerUrl.includes(".png") || 
+                                                      lowerUrl.includes(".webp") ||
+                                                      lowerUrl.includes("gif");
+
+                                      return (
+                                        <div 
+                                          key={index} 
+                                          className="group relative border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden bg-zinc-50 dark:bg-zinc-900 flex flex-col justify-between shadow-sm"
+                                        >
+                                          {isImage ? (
+                                            /* Image Thumbnail Display */
+                                            <div className="relative aspect-video w-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
+                                              <img 
+                                                src={url} 
+                                                alt={`Operational Proof Attachment Asset #${index + 1}`} 
+                                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
+                                                loading="lazy"
+                                              />
+                                            </div>
+                                          ) : (
+                                            /* Non-Image Asset Block Layout Fallback (e.g. PDFs, CSVs) */
+                                            <div className="p-3 flex items-center gap-2 text-zinc-600 dark:text-zinc-400 min-h-[60px]">
+                                              <span className="text-xl">📄</span>
+                                              <div className="overflow-hidden">
+                                                <div className="font-medium text-[11px] truncate">Document Attachment</div>
+                                                <div className="text-[10px] text-zinc-400 font-mono truncate">
+                                                  {url.split('/').pop()?.split('?')[0] || `file-${index + 1}`}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+
+                                          {/* Action Bottom Link Strip */}
+                                          <div className="bg-zinc-100/80 dark:bg-zinc-800/80 p-2 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center text-[11px]">
+                                            <span className="font-medium text-zinc-500">Evidence #{index + 1}</span>
+                                            <a
+                                              href={url}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="text-blue-600 dark:text-blue-400 font-semibold hover:underline flex items-center gap-1"
+                                            >
+                                              Open Original ↗
+                                            </a>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
                                   </div>
                                 </div>
                               )}
                             </div>
+
+                            {/* Dialog Bottom Dismiss Button */}
+                            <div className="pt-2 flex justify-end">
+                              <button
+                                type="button"
+                                // @ts-ignore
+                                onClick={(e) => e.currentTarget.closest('dialog').close()}
+                                className="px-4 py-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold rounded-md text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                              >
+                                Close View
+                              </button>
+                            </div>
                           </div>
-                        </details>
+                        </dialog>
                       </td>
                     </tr>
                   ))
