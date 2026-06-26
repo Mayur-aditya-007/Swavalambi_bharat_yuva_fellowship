@@ -103,14 +103,9 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<DailyReportFormValues>({
-    resolver: zodResolver(dailyReportSchema),
-    defaultValues: {
+const { register, handleSubmit, control, formState: { errors }, } = useForm({
+  resolver: zodResolver(dailyReportSchema),
+  defaultValues: {
       work_types: [],
       scheme_work_types: [],
       business_contacted: false,
