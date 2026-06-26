@@ -64,7 +64,7 @@ const dailyReportSchema = z.object({
 });
 
 export async function submitDailyReport(formData: FormData) {
-  const data: Record<string, any> = {};
+  const data: Record<string, unknown> = {};
 
   formData.forEach((value, key) => {
     if (key === "proof_files") return; // we handle files separately

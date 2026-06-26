@@ -1,12 +1,10 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { 
-  CheckCircle2, ArrowRight, FileText, Users, 
-  TrendingUp, MapPin, Award, Lightbulb, 
-  Target, GraduationCap, Briefcase, BarChart3,
-  Search, ShieldCheck, Microscope, Share2
+  CheckCircle2, FileText, Users, 
+  MapPin, Award, Lightbulb, 
+  Target, ShieldCheck, Microscope, Share2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/components/dictionary-provider";
@@ -160,7 +158,7 @@ export default function HomeBody() {
             <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">{dict.homeNew.planSubtitle}</p>
           </div>
           <div className="relative overflow-x-auto pb-8">
-            <div className="flex min-w-[1000px] gap-4">
+            <div className="flex min-w-250 gap-4">
               {[
                 { m: dict.homeNew.planM1, t: dict.homeNew.planT1, d: dict.homeNew.planD1 },
                 { m: dict.homeNew.planM2, t: dict.homeNew.planT2, d: dict.homeNew.planD2 },
@@ -225,7 +223,7 @@ export default function HomeBody() {
       <section className="py-24 bg-white relative">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="bg-slate-900 rounded-none p-12 lg:p-20 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9933]/10 via-transparent to-[#138808]/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-r from-[#FF9933]/10 via-transparent to-[#138808]/10 pointer-events-none" />
             <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8">
               <h2 className="text-4xl lg:text-6xl font-black text-white leading-tight">
                 {dict.homeNew.ctaTitle1} <br />

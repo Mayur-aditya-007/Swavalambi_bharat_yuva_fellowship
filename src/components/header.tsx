@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Menu, X, Phone, Mail, Award, Landmark } from "lucide-react";
+import Image from "next/image";
+import { Globe, Menu, X } from "lucide-react";
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { useTransition, useState } from "react";
 import { setLanguageLocale } from "@/app/actions";
@@ -31,7 +32,7 @@ export function Header({ dict, lang }: { dict: Dictionary; lang: "en" | "hi" }) 
               <Link href="/" className="flex items-center gap-2 sm:gap-4 group min-w-0">
                 <div className="relative flex-shrink-0">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-slate-50 border-2 border-[#000080] flex items-center justify-center p-1 overflow-hidden shadow-md">
-                    <img src="/sba-logo.jpeg" alt="SBA Logo" className="object-contain" />
+                    <Image src="/sba-logo.jpeg" alt="SBA Logo" width={64} height={64} className="object-contain" />
                   </div>
                   <div className="absolute -bottom-0.5 -right-0.5 bg-[#138808] w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-white shadow-sm"></div>
                 </div>
@@ -52,7 +53,9 @@ export function Header({ dict, lang }: { dict: Dictionary; lang: "en" | "hi" }) 
                 {[
                   { name: dict.nav?.about || "About Us", href: "/about" },
                   { name: dict.nav?.fellowship || "The Fellowship", href: "/fellowship" },
-                  { name: dict.nav?.report || "Daily Report", href: "/daily-report" }
+                  { name: dict.nav?.report || "Daily Report", href: "/daily-report" },
+                  { name: dict.nav?.gallery || "Gallery", href: "/gallery" }
+
                 ].map((item) => (
                   <Link 
                     key={item.href}
@@ -114,7 +117,9 @@ export function Header({ dict, lang }: { dict: Dictionary; lang: "en" | "hi" }) 
               {[
                 { name: dict.nav?.about || "About Us", href: "/about" },
                 { name: dict.nav?.fellowship || "The Fellowship", href: "/fellowship" },
-                { name: dict.nav?.report || "Daily Report", href: "/daily-report" }
+                { name: dict.nav?.report || "Daily Report", href: "/daily-report" },
+               { name: dict.nav?.gallery || "Gallery", href: "/gallery" }
+
               ].map((item) => (
                 <Link 
                   key={item.href}

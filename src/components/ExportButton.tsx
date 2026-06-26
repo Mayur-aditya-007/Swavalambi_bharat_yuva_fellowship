@@ -3,8 +3,43 @@
 import React from "react";
 import * as XLSX from "xlsx";
 
+interface RegistrationExportRecord {
+  [key: string]: unknown;
+  full_name?: string;
+  whatsapp?: string;
+  email?: string;
+  dob?: string;
+  gender?: string;
+  address?: string;
+  district?: string;
+  state?: string;
+  qualification?: string;
+  college_name?: string;
+  course_stream?: string;
+  year_semester?: string;
+  computer_knowledge?: string;
+  social_media_knowledge?: string;
+  work_interests?: string[] | string;
+  nss_ncc_connected?: string;
+  organization_details?: string;
+  available_6_months?: string;
+  weekly_time?: string;
+  available_time?: string[] | string;
+  motivation?: string;
+  district_opportunity?: string;
+  created_at?: string;
+}
+
 interface ExportButtonProps {
-  data: any[];
+  data: RegistrationExportRecord[];
+}
+
+function formatList(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string").join(", ");
+  }
+
+  return typeof value === "string" ? value : "";
 }
 
 export default function ExportButton({ data }: ExportButtonProps) {
@@ -17,28 +52,28 @@ export default function ExportButton({ data }: ExportButtonProps) {
     // Transform data maps to create cleaner columns headers in Excel
     const sanitizedData = data.map((record, index) => ({
       "S.No": index + 1,
-      "Full Name": record.full_name,
-      "WhatsApp Number": record.whatsapp,
-      "Email Address": record.email,
-      "Date of Birth": record.dob,
-      "Gender": record.gender,
-      "Full Address": record.address,
-      "District": record.district,
-      "State": record.state,
-      "Qualification": record.qualification,
-      "College Name": record.college_name,
-      "Course/Stream": record.course_stream,
-      "Year/Semester": record.year_semester,
-      "Computer Knowledge": record.computer_knowledge,
-      "Social Media Knowledge": record.social_media_knowledge,
-      "Work Interests": Array.isArray(record.work_interests) ? record.work_interests.join(", ") : record.work_interests,
-      "NSS/NCC Connected": record.nss_ncc_connected,
+      "Full Name": record.full_name ?? "",
+      "WhatsApp Number": record.whatsapp ?? "",
+      "Email Address": record.email ?? "",
+      "Date of Birth": record.dob ?? "",
+      "Gender": record.gender ?? "",
+      "Full Address": record.address ?? "",
+      "District": record.district ?? "",
+      "State": record.state ?? "",
+      "Qualification": record.qualification ?? "",
+      "College Name": record.college_name ?? "",
+      "Course/Stream": record.course_stream ?? "",
+      "Year/Semester": record.year_semester ?? "",
+      "Computer Knowledge": record.computer_knowledge ?? "",
+      "Social Media Knowledge": record.social_media_knowledge ?? "",
+      "Work Interests": formatList(record.work_interests),
+      "NSS/NCC Connected": record.nss_ncc_connected ?? "",
       "Organization Details": record.organization_details || "N/A",
-      "Available 6 Months": record.available_6_months,
+      "Available 6 Months": record.available_6_months ?? "",
       "Weekly Time Commitment": record.weekly_time || "N/A",
-      "Available Slots": Array.isArray(record.available_time) ? record.available_time.join(", ") : record.available_time,
-      "Motivation Statement": record.motivation,
-      "District Opportunity Ideas": record.district_opportunity,
+      "Available Slots": formatList(record.available_time),
+      "Motivation Statement": record.motivation ?? "",
+      "District Opportunity Ideas": record.district_opportunity ?? "",
       "Submission Date": record.created_at ? new Date(record.created_at).toLocaleDateString() : "N/A",
     }));
 

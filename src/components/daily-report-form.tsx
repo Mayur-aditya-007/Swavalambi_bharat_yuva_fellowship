@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
+import type { FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { submitDailyReport } from "@/app/daily-report/actions";
@@ -106,10 +107,9 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm<DailyReportFormValues>({
-    resolver: zodResolver(dailyReportSchema) as any,
+    resolver: zodResolver(dailyReportSchema),
     defaultValues: {
       work_types: [],
       scheme_work_types: [],
@@ -121,9 +121,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
     },
   });
 
-  const watchBusinessContacted = watch("business_contacted");
-  const watchGovernmentScheme = watch("government_scheme_work");
-  const watchYouthOutreach = watch("youth_outreach");
+  const watchBusinessContacted = useWatch({ control, name: "business_contacted" });
+  const watchGovernmentScheme = useWatch({ control, name: "government_scheme_work" });
+  const watchYouthOutreach = useWatch({ control, name: "youth_outreach" });
+  const watchStartupIdeaFound = useWatch({ control, name: "startup_idea_found" });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -159,7 +160,7 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
     });
   };
 
-  const onError = (errors: any) => {
+  const onError = (errors: FieldErrors<DailyReportFormValues>) => {
     const errorFields = Object.keys(errors).map(field => field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
     setServerError(`Please fix the errors in the following fields: ${errorFields.join(", ")}`);
     
@@ -178,10 +179,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
       )}
 
       {/* 1. Basic Details */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
         <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.dailyReport.section1Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+          <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.dailyReport.section1Title}</CardTitle>
+          <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -243,10 +244,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
       </Card>
 
       {/* 2. Work Type */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
         <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.dailyReport.section2Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+          <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.dailyReport.section2Title}</CardTitle>
+          <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="space-y-3">
@@ -260,7 +261,7 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
                     render={({ field }) => (
                       <Checkbox
                         id={`type-${type}`}
-                        className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
+                        className="w-5 h-5 data-[state=checked]:bg-navy data-[state=checked]:border-navy"
                         checked={field.value?.includes(type)}
                         onCheckedChange={(checked) => {
                           const current = field.value || [];
@@ -284,7 +285,7 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
             <Label htmlFor="work_description" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.workDesc}</Label>
             <Textarea 
               id="work_description" 
-              className="bg-[#FEF5EB]/30 text-base resize-none min-h-[100px]"
+              className="bg-[#FEF5EB]/30 text-base resize-none min-h-25"
               {...register("work_description")} 
             />
             {errors.work_description && <p className="text-sm text-destructive">{errors.work_description.message}</p>}
@@ -293,10 +294,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
       </Card>
 
       {/* 3. Output Metrics */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
         <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.dailyReport.section3Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+          <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.dailyReport.section3Title}</CardTitle>
+          <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -345,10 +346,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
       </Card>
 
       {/* 4. Conditional Sections */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
         <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.dailyReport.section4Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+          <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.dailyReport.section4Title}</CardTitle>
+          <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="space-y-6 bg-[#FEF5EB]/20 dark:bg-zinc-900/50 p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
@@ -436,7 +437,7 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
                   />
                   <Label htmlFor="startup_idea_found" className="text-base">{dict.dailyReport.didStartupIdea}</Label>
                 </div>
-                {watch("startup_idea_found") && (
+                {watchStartupIdeaFound && (
                   <>
                     <Textarea placeholder={dict.dailyReport.startupDetails} className="md:col-span-2 bg-[#FEF5EB]/50 text-base" {...register("startup_idea_details")} />
                     {errors.startup_idea_details && <p className="text-sm text-destructive">{errors.startup_idea_details.message}</p>}
@@ -449,10 +450,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
       </Card>
 
       {/* 5. Highlights */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
         <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.dailyReport.section5Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+          <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.dailyReport.section5Title}</CardTitle>
+          <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="space-y-2">
@@ -476,10 +477,10 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
       </Card>
 
       {/* 6. Proof Uploads */}
-      <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+      <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
         <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.dailyReport.section6Title}</CardTitle>
-          <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+          <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.dailyReport.section6Title}</CardTitle>
+          <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
         </CardHeader>
         <CardContent className="space-y-6 pt-6">
           <div className="space-y-4">

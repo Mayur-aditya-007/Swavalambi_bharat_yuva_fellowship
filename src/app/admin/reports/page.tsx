@@ -9,6 +9,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface DailyReportRecord {
+  id: string;
+  fellow_name?: string;
+  district?: string;
+  whatsapp?: string;
+  report_date?: string;
+  reporting_day?: string;
+  college_name?: string;
+  work_description?: string;
+  work_types?: string[] | string;
+  entrepreneurs_contacted?: number;
+  students_contacted?: number;
+  field_visits?: number;
+  business_profiles?: number;
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function AdminReportDashboard() {
@@ -66,9 +82,9 @@ export default async function AdminReportDashboard() {
       </div>
 
       {/* Main Table Card */}
-      <Card className="border-t-4 border-t-[#0B3C5D] bg-white dark:bg-zinc-900 shadow-md">
+      <Card className="border-t-4 border-t-navy bg-white dark:bg-zinc-900 shadow-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-[#0B3C5D] dark:text-blue-400">
+          <CardTitle className="text-2xl font-bold text-navy dark:text-blue-400">
             Fellow Daily Activity Ledger
           </CardTitle>
           <CardDescription>
@@ -95,7 +111,7 @@ export default async function AdminReportDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  reports.map((report: any) => (
+                  reports.map((report: DailyReportRecord) => (
                     <tr
                       key={report.id}
                       className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors"
@@ -116,7 +132,7 @@ export default async function AdminReportDashboard() {
                       </td>
 
                       {/* Work Scope */}
-                      <td className="p-4 text-zinc-600 dark:text-zinc-400 max-w-[240px]">
+                      <td className="p-4 text-zinc-600 dark:text-zinc-400 max-w-60">
                         <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate" title={report.college_name}>
                           {report.college_name}
                         </div>

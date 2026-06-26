@@ -3,8 +3,7 @@
 import React from "react";
 import { 
   BookOpen, CheckCircle2, Users, MapPin, 
-  Lightbulb, Award, Briefcase, BarChart3, 
-  ShieldCheck, Microscope, Target, ArrowRight
+  Lightbulb, Microscope, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/components/dictionary-provider";

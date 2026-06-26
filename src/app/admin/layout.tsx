@@ -14,6 +14,7 @@ export default function AdminLayout({
   // Helper check to determine matching tab states
   const isRegistrationsActive = pathname === "/admin";
   const isReportsActive = pathname.startsWith("/admin/report");
+  const isGalleryActive = pathname.startsWith("/admin/gallery");
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col">
@@ -51,6 +52,17 @@ export default function AdminLayout({
               }`}
             >
               Operational Reports
+            </Link>
+            
+            <Link
+              href="/admin/gallery"
+              className={`px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none ${
+                isGalleryActive
+                  ? "bg-white dark:bg-zinc-950 text-[#0B3C5D] dark:text-blue-400 shadow-sm"
+                  : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
+              }`}
+            >
+              Gallery
             </Link>
           </nav>
 

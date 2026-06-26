@@ -4,7 +4,8 @@ export const en = {
   nav: {
     about: "About Us",
     fellowship: "The Fellowship",
-    report: "Daily Report"
+    report: "Daily Report",
+    gallery: "Gallery"
   },
   header: {
     title: "Swavalambi Bharat Abhiyan",
@@ -279,7 +280,8 @@ export const hi: Dictionary = {
   nav: {
     about: "हमारे बारे में",
     fellowship: "फेलोशिप",
-    report: "दैनिक रिपोर्ट"
+    report: "दैनिक रिपोर्ट",
+    gallery: "गैलरी"
   },
   header: {
     title: "स्वावलंबी भारत अभियान",

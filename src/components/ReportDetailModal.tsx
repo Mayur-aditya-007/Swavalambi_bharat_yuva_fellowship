@@ -1,9 +1,45 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 
 interface ReportDetailModalProps {
-  report: any;
+  report: Record<string, unknown> & {
+    fellow_name?: string;
+    proof_urls?: string[];
+    business_contacted?: boolean;
+    government_scheme_work?: boolean;
+    youth_outreach?: boolean;
+    social_media_work?: boolean;
+    business_name?: string;
+    business_category?: string;
+    contact_person?: string;
+    contact_number?: string;
+    business_observation?: string;
+    scheme_name?: string;
+    scheme_category?: string;
+    scheme_work_types?: string[] | string;
+    scheme_details?: string;
+    institution_name?: string;
+    students_spoken?: number;
+    interested_students?: number;
+    startup_idea_found?: boolean;
+    startup_idea_details?: string;
+    post_count?: number;
+    reel_count?: number;
+    story_count?: number;
+    video_count?: number;
+    poster_count?: number;
+    content_topic?: string;
+    content_link?: string;
+    achievement?: string;
+    challenges?: string;
+    tomorrow_plan?: string;
+    success_stories?: number;
+    schemes_studied?: number;
+    social_posts?: number;
+    meetings_attended?: number;
+  };
 }
 
 export default function ReportDetailModal({ report }: ReportDetailModalProps) {
@@ -24,12 +60,12 @@ export default function ReportDetailModal({ report }: ReportDetailModalProps) {
 
       <dialog
         ref={dialogRef}
-        className="backdrop:bg-black/50 p-0 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 w-[92vw] max-w-[560px] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+        className="backdrop:bg-black/50 p-0 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 w-[92vw] max-w-140 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.target === dialogRef.current && closeModal()}
       >
         <div className="p-5 space-y-4 max-h-[85vh] overflow-y-auto text-left">
           <div className="flex justify-between items-center border-b pb-2">
-            <h4 className="font-bold text-base text-[#0B3C5D] dark:text-blue-400 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+            <h4 className="font-bold text-base text-navy dark:text-blue-400 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
               <span>Metric Inspector Portfolio</span>
               <span className="text-xs font-mono font-normal text-zinc-400">({report.fellow_name})</span>
             </h4>
@@ -118,7 +154,7 @@ export default function ReportDetailModal({ report }: ReportDetailModalProps) {
           {/* Summaries & Proof Section */}
           <div className="border-t pt-3 text-xs space-y-2">
             <div>
-              <b className="text-[#0B3C5D] dark:text-blue-400 block font-semibold">Key Achievement:</b>
+              <b className="text-navy dark:text-blue-400 block font-semibold">Key Achievement:</b>
               <p className="mt-0.5 text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 p-2 rounded">
                 {report.achievement}
               </p>
@@ -134,7 +170,7 @@ export default function ReportDetailModal({ report }: ReportDetailModalProps) {
             <div>
               <b className="text-zinc-500 block font-semibold">Tomorrow Plan:</b>
               <p className="mt-0.5 text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 p-2 rounded italic">
-                "{report.tomorrow_plan}"
+                “{report.tomorrow_plan}”
               </p>
             </div>
 
@@ -160,15 +196,17 @@ export default function ReportDetailModal({ report }: ReportDetailModalProps) {
                       >
                         {isImage ? (
                           <div className="relative aspect-video w-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden">
-                            <img 
-                              src={url} 
-                              alt="Operational Proof" 
-                              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-200"
+                            <Image
+                              src={url}
+                              alt="Operational Proof"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-200"
                               loading="lazy"
                             />
                           </div>
                         ) : (
-                          <div className="p-3 flex items-center gap-2 text-zinc-600 dark:text-zinc-400 min-h-[60px]">
+                          <div className="p-3 flex items-center gap-2 text-zinc-600 dark:text-zinc-400 min-h-15">
                             <span className="text-xl">📄</span>
                             <div className="overflow-hidden">
                               <div className="font-medium text-[11px] truncate">Document Attachment</div>

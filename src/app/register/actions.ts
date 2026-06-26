@@ -57,8 +57,6 @@ const registrationSchema = z.object({
   }
 });
 
-type RegistrationFormValues = z.infer<typeof registrationSchema>;
-
 export async function submitRegistration(formData: FormData) {
   // Use ?? "" to catch missing or unrendered HTML form keys as clean strings
   const data = {

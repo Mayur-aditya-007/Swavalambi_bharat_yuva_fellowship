@@ -3,9 +3,72 @@
 import React from "react";
 import * as XLSX from "xlsx";
 
+interface DailyReportExportRecord {
+  [key: string]: unknown;
+  fellow_name?: string;
+  whatsapp?: string;
+  district?: string;
+  college_name?: string;
+  report_date?: string;
+  reporting_day?: string;
+  work_types?: string[] | string;
+  work_description?: string;
+  entrepreneurs_contacted?: number;
+  students_contacted?: number;
+  field_visits?: number;
+  business_profiles?: number;
+  success_stories?: number;
+  schemes_studied?: number;
+  social_posts?: number;
+  meetings_attended?: number;
+  calls_followups?: number;
+  business_contacted?: boolean;
+  business_name?: string;
+  business_location?: string;
+  business_category?: string;
+  contact_person?: string;
+  contact_number?: string;
+  business_observation?: string;
+  government_scheme_work?: boolean;
+  scheme_name?: string;
+  scheme_category?: string;
+  scheme_work_types?: string[] | string;
+  scheme_details?: string;
+  youth_outreach?: boolean;
+  institution_name?: string;
+  students_spoken?: number;
+  interested_students?: number;
+  startup_idea_found?: boolean;
+  startup_idea_details?: string;
+  social_media_work?: boolean;
+  post_count?: number;
+  reel_count?: number;
+  story_count?: number;
+  video_count?: number;
+  poster_count?: number;
+  content_topic?: string;
+  content_link?: string;
+  meeting_done?: boolean;
+  meeting_type?: string;
+  meeting_details?: string;
+  achievement?: string;
+  challenges?: string;
+  tomorrow_plan?: string;
+  proof_urls?: string[] | string;
+  created_at?: string;
+}
+
 interface ExportReportsButtonProps {
-  data: any[];
+  data: DailyReportExportRecord[];
   text?: string;
+}
+
+function formatList(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string").join(", ");
+  }
+
+  return typeof value === "string" ? value : "";
 }
 
 export default function ExportReportsButton({ data, text = "Download Reports" }: ExportReportsButtonProps) {
@@ -18,14 +81,14 @@ export default function ExportReportsButton({ data, text = "Download Reports" }:
     // Transform reporting data rows into clean, human-readable column sets
     const sanitizedData = data.map((record, index) => ({
       "S.No": index + 1,
-      "Fellow Name": record.fellow_name,
-      "WhatsApp": record.whatsapp,
-      "District": record.district,
-      "College/Institution": record.college_name,
-      "Report Date": record.report_date,
-      "Reporting Day": record.reporting_day,
-      "Work Tasks Scope": Array.isArray(record.work_types) ? record.work_types.join(", ") : record.work_types,
-      "Work Summary Details": record.work_description,
+      "Fellow Name": record.fellow_name ?? "",
+      "WhatsApp": record.whatsapp ?? "",
+      "District": record.district ?? "",
+      "College/Institution": record.college_name ?? "",
+      "Report Date": record.report_date ?? "",
+      "Reporting Day": record.reporting_day ?? "",
+      "Work Tasks Scope": formatList(record.work_types),
+      "Work Summary Details": record.work_description ?? "",
       
       // Output Metrics Data Stream
       "Entrepreneurs Contacted": record.entrepreneurs_contacted ?? 0,
@@ -51,7 +114,7 @@ export default function ExportReportsButton({ data, text = "Download Reports" }:
       "Studied Gov Schemes?": record.government_scheme_work ? "Yes" : "No",
       "Target Scheme Name": record.scheme_name || "N/A",
       "Scheme Category": record.scheme_category || "N/A",
-      "Scheme Work Mode": Array.isArray(record.scheme_work_types) ? record.scheme_work_types.join(", ") : record.scheme_work_types || "N/A",
+      "Scheme Work Mode": formatList(record.scheme_work_types) || "N/A",
       "Scheme Core Details": record.scheme_details || "N/A",
 
       // Academic Youth Outreach
@@ -81,7 +144,7 @@ export default function ExportReportsButton({ data, text = "Download Reports" }:
       "Key Milestone Achievement": record.achievement,
       "Identified Bottleneck Challenges": record.challenges || "None",
       "Tomorrow Action Roadmap": record.tomorrow_plan,
-      "Verification Evidence Proof URLs": Array.isArray(record.proof_urls) ? record.proof_urls.join(" | ") : record.proof_urls || "None Uploaded",
+      "Verification Evidence Proof URLs": Array.isArray(record.proof_urls) ? record.proof_urls.join(" | ") : (typeof record.proof_urls === "string" ? record.proof_urls : "None Uploaded"),
       "System Submission Timestamp": record.created_at ? new Date(record.created_at).toLocaleString() : "N/A",
     }));
 

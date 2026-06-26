@@ -1,5 +1,5 @@
 import { getRegistrations } from "./actions";
-import ExportButton from "@/components/ExportButton"; // Adjust path if needed
+import ExportButton from "@/components/ExportButton";
 import {
   Card,
   CardContent,
@@ -7,6 +7,32 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+interface RegistrationRecord {
+  id: string;
+  full_name?: string;
+  gender?: string;
+  dob?: string;
+  email?: string;
+  whatsapp?: string;
+  district?: string;
+  state?: string;
+  address?: string;
+  qualification?: string;
+  college_name?: string;
+  course_stream?: string;
+  year_semester?: string;
+  computer_knowledge?: string;
+  social_media_knowledge?: string;
+  nss_ncc_connected?: string;
+  organization_details?: string;
+  work_interests?: string[] | string;
+  available_6_months?: string;
+  weekly_time?: string;
+  available_time?: string[] | string;
+  motivation?: string;
+  district_opportunity?: string;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +90,7 @@ export default async function AdminDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  records.map((user: any) => (
+                  records.map((user: RegistrationRecord) => (
                     <tr
                       key={user.id}
                       className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors"
@@ -149,13 +175,13 @@ export default async function AdminDashboard() {
                               <div>
                                 <b className="text-[#0B3C5D] dark:text-blue-400 block font-semibold">Statement of Motivation:</b>
                                 <p className="mt-1 text-zinc-600 dark:text-zinc-400 italic bg-zinc-50 dark:bg-zinc-900 p-2.5 rounded border border-dashed">
-                                  "{user.motivation}"
+                                  “{user.motivation}”
                                 </p>
                               </div>
                               <div>
                                 <b className="text-[#0B3C5D] dark:text-blue-400 block font-semibold">District Development Target Ideas:</b>
                                 <p className="mt-1 text-zinc-600 dark:text-zinc-400 italic bg-zinc-50 dark:bg-zinc-900 p-2.5 rounded border border-dashed">
-                                  "{user.district_opportunity}"
+                                  “{user.district_opportunity}”
                                 </p>
                               </div>
                             </div>

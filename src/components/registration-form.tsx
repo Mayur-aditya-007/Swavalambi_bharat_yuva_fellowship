@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
+import type { FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { submitRegistration } from "@/app/register/actions";
@@ -116,7 +117,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
     setValue,
     formState: { errors },
   } = useForm<RegistrationFormValues>({
-    resolver: zodResolver(formSchema) as any,
+    resolver: zodResolver(formSchema),
     shouldUnregister: true,
     defaultValues: {
       full_name: "",
@@ -179,7 +180,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
     });
   };
 
-  const onError = (errors: any) => {
+  const onError = (errors: FieldErrors<RegistrationFormValues>) => {
     const errorFields = Object.keys(errors).map(field => field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
     setServerError(`Please fix the errors in the following fields: ${errorFields.join(", ")}`);
     
@@ -201,10 +202,10 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
         )}
 
         {/* 1. Personal Details */}
-        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
           <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section1Title}</CardTitle>
-            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.register.section1Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
             <CardDescription>{dict.register.section1Desc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
@@ -257,7 +258,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
 
             <div className="space-y-2">
               <Label htmlFor="address" className="text-zinc-800 dark:text-zinc-200">{dict.register.address}</Label>
-              <Textarea id="address" className="bg-[#FEF5EB]/30 text-base resize-none min-h-[80px]" {...register("address")} />
+              <Textarea id="address" className="bg-[#FEF5EB]/30 text-base resize-none min-h-20" {...register("address")} />
               {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
             </div>
 
@@ -293,10 +294,10 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
         </Card>
 
         {/* 2. Education Details */}
-        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
           <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section2Title}</CardTitle>
-            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.register.section2Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
             <CardDescription>{dict.register.section2Desc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
@@ -389,7 +390,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
                       render={({ field }) => (
                         <Checkbox
                           id={`interest-${interest}`}
-                          className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
+                          className="w-5 h-5 data-[state=checked]:bg-navy data-[state=checked]:border-navy"
                           checked={field.value?.includes(interest) || false}
                           onCheckedChange={(checked) => {
                             const current = field.value || [];
@@ -427,11 +428,11 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
                     className="flex gap-8"
                   >
                     <div className="flex items-center space-x-3">
-                      <RadioGroupItem value="Yes" id="nss-yes" className="w-5 h-5 text-[#0B3C5D]" />
+                      <RadioGroupItem value="Yes" id="nss-yes" className="w-5 h-5 text-navy" />
                       <Label htmlFor="nss-yes" className="font-medium cursor-pointer text-base">{dict.register.yes}</Label>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <RadioGroupItem value="No" id="nss-no" className="w-5 h-5 text-[#0B3C5D]" />
+                      <RadioGroupItem value="No" id="nss-no" className="w-5 h-5 text-navy" />
                       <Label htmlFor="nss-no" className="font-medium cursor-pointer text-base">{dict.register.no}</Label>
                     </div>
                   </RadioGroup>
@@ -451,10 +452,10 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
         </Card>
 
         {/* 4. Availability */}
-        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
           <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section4Title}</CardTitle>
-            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.register.section4Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
             <CardDescription>{dict.register.section4Desc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
@@ -477,11 +478,11 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
                       className="flex gap-8"
                     >
                       <div className="flex items-center space-x-3">
-                        <RadioGroupItem value="Yes" id="commit-yes" className="w-5 h-5 text-[#0B3C5D]" />
+                        <RadioGroupItem value="Yes" id="commit-yes" className="w-5 h-5 text-navy" />
                         <Label htmlFor="commit-yes" className="font-medium cursor-pointer text-base">{dict.register.yes}</Label>
                       </div>
                       <div className="flex items-center space-x-3">
-                        <RadioGroupItem value="No" id="commit-no" className="w-5 h-5 text-[#0B3C5D]" />
+                        <RadioGroupItem value="No" id="commit-no" className="w-5 h-5 text-navy" />
                         <Label htmlFor="commit-no" className="font-medium cursor-pointer text-base">{dict.register.no}</Label>
                       </div>
                     </RadioGroup>
@@ -528,7 +529,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
                           render={({ field }) => (
                             <Checkbox
                               id={`time-${time}`}
-                              className="w-5 h-5 data-[state=checked]:bg-[#0B3C5D] data-[state=checked]:border-[#0B3C5D]"
+                              className="w-5 h-5 data-[state=checked]:bg-navy data-[state=checked]:border-navy"
                               checked={field.value?.includes(time) || false}
                               onCheckedChange={(checked) => {
                                 const current = field.value || [];
@@ -554,10 +555,10 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
         </Card>
 
         {/* 5. Motivation & Declaration */}
-        <Card className="border-t-4 border-t-[#0B3C5D] shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
+        <Card className="border-t-4 border-t-navy shadow-sm bg-white dark:bg-zinc-900 overflow-hidden">
           <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800">
-            <CardTitle className="text-xl text-[#0B3C5D] dark:text-blue-400">{dict.register.section5Title}</CardTitle>
-            <div className="w-12 h-0.5 bg-[#E67E22] mt-2 mb-1"></div>
+            <CardTitle className="text-xl text-navy dark:text-blue-400">{dict.register.section5Title}</CardTitle>
+            <div className="w-12 h-0.5 bg-saffron mt-2 mb-1"></div>
             <CardDescription>{dict.register.section5Desc}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
@@ -565,7 +566,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
               <Label htmlFor="motivation" className="text-zinc-800 dark:text-zinc-200">{dict.register.motivation}</Label>
               <Textarea 
                 id="motivation" 
-                className="min-h-[120px] bg-[#FEF5EB]/30 text-base resize-none"
+                className="min-h-30 bg-[#FEF5EB]/30 text-base resize-none"
                 {...register("motivation")} 
               />
               {errors.motivation && <p className="text-sm text-destructive">{errors.motivation.message}</p>}
@@ -575,7 +576,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
               <Label htmlFor="district_opportunity" className="text-zinc-800 dark:text-zinc-200">{dict.register.districtOpportunity}</Label>
               <Textarea 
                 id="district_opportunity" 
-                className="bg-[#FEF5EB]/30 text-base resize-none min-h-[80px]"
+                className="bg-[#FEF5EB]/30 text-base resize-none min-h-20"
                 {...register("district_opportunity")} 
               />
               {errors.district_opportunity && <p className="text-sm text-destructive">{errors.district_opportunity.message}</p>}
@@ -586,7 +587,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
         <Button 
           type="submit" 
           size="lg" 
-          className="w-full text-lg h-14 bg-[#0B3C5D] hover:bg-[#0B3C5D]/90 text-white shadow-md transition-all rounded-md font-medium" 
+          className="w-full text-lg h-14 bg-navy hover:bg-navy/90 text-white shadow-md transition-all rounded-md font-medium" 
           disabled={isPending}
         >
           {isPending ? (
@@ -615,7 +616,7 @@ export function RegistrationForm({ dict }: { dict: Dictionary }) {
             <CardContent className="flex justify-end pt-2">
               <Button 
                 onClick={() => setShowModal(false)}
-                className="bg-[#0B3C5D] hover:bg-[#0B3C5D]/90 text-white font-medium px-6 h-11"
+                className="bg-navy hover:bg-navy/90 text-white font-medium px-6 h-11"
               >
                 Close Window
               </Button>
