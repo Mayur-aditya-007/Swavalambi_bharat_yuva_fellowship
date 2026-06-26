@@ -62,9 +62,8 @@ const dailyReportSchema = z.object({
   challenges: z.string().optional(),
   tomorrow_plan: z.string().min(5, "Tomorrow plan is required"),
 });
-
 export async function submitDailyReport(formData: FormData) {
-  const data: Record<string, unknown> = {};
+  const data: Record<string, any> = {}; // Changed from unknown to any
 
   formData.forEach((value, key) => {
     if (key === "proof_files") return; // we handle files separately
