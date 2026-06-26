@@ -159,9 +159,9 @@ export default async function AdminReportDashboard() {
                       </td>
 
                       {/* Clean Isolated Client-Safe Inspector Component */}
-                      <td className="p-4 text-center">
-                        <ReportDetailModal report={report} />
-                      </td>
+                    <td className="p-4 text-center">
+  <ReportDetailModal report={{ ...report } as any} />
+</td>
                     </tr>
                   ))
                 )}
