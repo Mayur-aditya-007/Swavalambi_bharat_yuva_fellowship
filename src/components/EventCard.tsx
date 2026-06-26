@@ -16,10 +16,9 @@ interface EventData {
   images?: string[]; // Adding full array access support
 }
 
+// Update this type declaration block inside src/components/EventCard.tsx
 interface DictionaryLike {
-  gallery?: {
-    photosText?: string;
-  };
+  [key: string]: any; // Allows passing the global dictionary configuration gracefully
 }
 
 interface EventCardProps {
