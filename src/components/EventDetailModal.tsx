@@ -26,8 +26,9 @@ export function EventDetailModal({
   categoryLabel,
   onClose,
 }: EventDetailModalProps) {
-  const allImages =
-    event.images && event.images.length > 0 ? event.images : [event.image];
+// Filter out any undefined or empty values to guarantee an array of strings
+const allImages = (event.images && event.images.length > 0 ? event.images : [event.image])
+  .filter((url): url is string => typeof url === "string" && url.length > 0);
   const [activePreviewUrl, setActivePreviewUrl] = useState(allImages[0]);
 
   return (
