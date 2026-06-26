@@ -20,10 +20,11 @@ export default function AdminLayout({
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col">
       {/* Universal Sticky Top Admin Dashboard Switcher Panel */}
       <header className="sticky top-0 z-40 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 flex h-16 items-center justify-between">
+        {/* UPDATED: flex-col on mobile for clean stacking, flex-row on sm and up */}
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row sm:h-16 items-center justify-between py-3 sm:py-0 gap-3 sm:gap-4">
           
           {/* Logo Title Brand Box */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto">
             <span className="text-xl">🇮🇳</span>
             <span className="font-bold text-sm sm:text-base tracking-tight text-[#0B3C5D] dark:text-blue-400 font-mono">
               SBA-YOUTHFELLOWSHIP
@@ -31,32 +32,33 @@ export default function AdminLayout({
           </div>
 
           {/* Interactive Navigation Control Segment Switcher */}
-          <nav className="flex items-center p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-inner">
+          {/* UPDATED: Added w-full sm:w-auto to scale cleanly on compact displays */}
+          <nav className="flex items-center w-full sm:w-auto justify-between sm:justify-start p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-inner overflow-x-auto scrollbar-none">
             <Link
               href="/admin"
-              className={`px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none ${
+              className={`flex-1 sm:flex-none text-center px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none whitespace-nowrap ${
                 isRegistrationsActive
                   ? "bg-white dark:bg-zinc-950 text-[#0B3C5D] dark:text-blue-400 shadow-sm"
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
               }`}
             >
-              Registrations Portal
+              Registrations
             </Link>
             
             <Link
               href="/admin/reports"
-              className={`px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none ${
+              className={`flex-1 sm:flex-none text-center px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none whitespace-nowrap ${
                 isReportsActive
                   ? "bg-white dark:bg-zinc-950 text-[#0B3C5D] dark:text-blue-400 shadow-sm"
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
               }`}
             >
-              Operational Reports
+              Reports
             </Link>
             
             <Link
               href="/admin/gallery"
-              className={`px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none ${
+              className={`flex-1 sm:flex-none text-center px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-150 select-none whitespace-nowrap ${
                 isGalleryActive
                   ? "bg-white dark:bg-zinc-950 text-[#0B3C5D] dark:text-blue-400 shadow-sm"
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
