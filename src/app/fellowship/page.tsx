@@ -1,10 +1,8 @@
 "use client";
 
 import React from "react";
-import { 
-  BookOpen, CheckCircle2, Users, MapPin, 
-  Lightbulb, Microscope, ArrowRight
-} from "lucide-react";
+// Update this line at the top of src/app/fellowship/page.tsx
+import { BookOpen, CheckCircle2, Users, MapPin, Lightbulb, Microscope, ArrowRight, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useDictionary } from "@/components/dictionary-provider";
 
@@ -81,7 +79,7 @@ export default function FellowshipPage() {
             { t: dict.fellowship.role1T, i: MapPin, d: dict.fellowship.role1D },
             { t: dict.fellowship.role2T, i: BookOpen, d: dict.fellowship.role2D },
             { t: dict.fellowship.role3T, i: Microscope, d: dict.fellowship.role3D },
-            { t: dict.fellowship.role4T, i: BarChart3, d: dict.fellowship.role4D },
+            { t: dict.fellowship.role4T, i: BarChart, d: dict.fellowship.role4D },
             { t: dict.fellowship.role5T, i: Lightbulb, d: dict.fellowship.role5D },
             { t: dict.fellowship.role6T, i: Users, d: dict.fellowship.role6D }
           ].map((role, i) => (
