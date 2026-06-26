@@ -87,8 +87,6 @@ const dailyReportSchema = z.object({
   tomorrow_plan: z.string().min(5, "Required"),
 });
 
-type DailyReportFormValues = z.infer<typeof dailyReportSchema>;
-
 const WORK_TYPES = [
   "Local Business Mapping",
   "Success Story Documentation",
@@ -103,9 +101,18 @@ export function DailyReportForm({ dict }: { dict: Dictionary }) {
   const [serverError, setServerError] = useState<string | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
-const { register, handleSubmit, control, formState: { errors }, } = useForm({
-  resolver: zodResolver(dailyReportSchema),
-  defaultValues: {
+  // Removed explicit type generic mapping configuration to prevent resolver key array errors
+  const { register, handleSubmit, control, formState: { errors } } = useForm({
+    resolver: zodResolver(dailyReportSchema),
+    defaultValues: {
+      fellow_name: "",
+      whatsapp: "",
+      district: "",
+      college_name: "",
+      report_date: "",
+      reporting_day: "",
+      work_description: "",
+      tomorrow_plan: "",
       work_types: [],
       scheme_work_types: [],
       business_contacted: false,
@@ -113,6 +120,15 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
       youth_outreach: false,
       social_media_work: false,
       meeting_done: false,
+      entrepreneurs_contacted: 0,
+      students_contacted: 0,
+      field_visits: 0,
+      business_profiles: 0,
+      success_stories: 0,
+      schemes_studied: 0,
+      social_posts: 0,
+      meetings_attended: 0,
+      calls_followups: 0,
     },
   });
 
@@ -132,14 +148,14 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = (data: DailyReportFormValues) => {
+  const onSubmit = (data: any) => {
     setServerError(null);
     startTransition(async () => {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           value.forEach((v) => formData.append(`${key}[]`, v));
-        } else if (value !== undefined) {
+        } else if (value !== undefined && value !== null) {
           formData.append(key, value.toString());
         }
       });
@@ -155,8 +171,10 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
     });
   };
 
-  const onError = (errors: FieldErrors<DailyReportFormValues>) => {
-    const errorFields = Object.keys(errors).map(field => field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+  const onError = (formErrors: FieldErrors) => {
+    const errorFields = Object.keys(formErrors).map(field => 
+      field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+    );
     setServerError(`Please fix the errors in the following fields: ${errorFields.join(", ")}`);
     
     const firstError = document.querySelector('.text-destructive');
@@ -184,31 +202,31 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
             <div className="space-y-2">
               <Label htmlFor="fellow_name" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.fellowName}</Label>
               <Input id="fellow_name" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("fellow_name")} />
-              {errors.fellow_name && <p className="text-sm text-destructive">{errors.fellow_name.message}</p>}
+              {errors.fellow_name && <p className="text-sm text-destructive">{errors.fellow_name.message as string}</p>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="whatsapp" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.whatsapp}</Label>
               <Input id="whatsapp" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("whatsapp")} />
-              {errors.whatsapp && <p className="text-sm text-destructive">{errors.whatsapp.message}</p>}
+              {errors.whatsapp && <p className="text-sm text-destructive">{errors.whatsapp.message as string}</p>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="district" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.district}</Label>
               <Input id="district" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("district")} />
-              {errors.district && <p className="text-sm text-destructive">{errors.district.message}</p>}
+              {errors.district && <p className="text-sm text-destructive">{errors.district.message as string}</p>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="college_name" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.collegeName}</Label>
               <Input id="college_name" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("college_name")} />
-              {errors.college_name && <p className="text-sm text-destructive">{errors.college_name.message}</p>}
+              {errors.college_name && <p className="text-sm text-destructive">{errors.college_name.message as string}</p>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="report_date" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.reportDate}</Label>
               <Input id="report_date" type="date" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("report_date")} />
-              {errors.report_date && <p className="text-sm text-destructive">{errors.report_date.message}</p>}
+              {errors.report_date && <p className="text-sm text-destructive">{errors.report_date.message as string}</p>}
             </div>
 
             <div className="space-y-2">
@@ -217,7 +235,7 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
                 control={control}
                 name="reporting_day"
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value ?? null}>
+                  <Select onValueChange={field.onChange} value={field.value ?? undefined}>
                     <SelectTrigger className="bg-[#FEF5EB]/30 w-full h-12 text-base">
                       <SelectValue placeholder={dict.dailyReport.selectDay} />
                     </SelectTrigger>
@@ -233,6 +251,7 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
                   </Select>
                 )}
               />
+              {errors.reporting_day && <p className="text-sm text-destructive">{errors.reporting_day.message as string}</p>}
             </div>
           </div>
         </CardContent>
@@ -257,7 +276,7 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
                       <Checkbox
                         id={`type-${type}`}
                         className="w-5 h-5 data-[state=checked]:bg-navy data-[state=checked]:border-navy"
-                        checked={field.value?.includes(type)}
+                        checked={field.value?.includes(type) ?? false}
                         onCheckedChange={(checked) => {
                           const current = field.value || [];
                           const updated = checked
@@ -274,6 +293,7 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
                 </div>
               ))}
             </div>
+            {errors.work_types && <p className="text-sm text-destructive">{errors.work_types.message as string}</p>}
           </div>
 
           <div className="space-y-2">
@@ -283,7 +303,7 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
               className="bg-[#FEF5EB]/30 text-base resize-none min-h-25"
               {...register("work_description")} 
             />
-            {errors.work_description && <p className="text-sm text-destructive">{errors.work_description.message}</p>}
+            {errors.work_description && <p className="text-sm text-destructive">{errors.work_description.message as string}</p>}
           </div>
         </CardContent>
       </Card>
@@ -299,42 +319,42 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.entrepreneursContacted}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("entrepreneurs_contacted")} />
-              {errors.entrepreneurs_contacted && <p className="text-sm text-destructive">{errors.entrepreneurs_contacted.message}</p>}
+              {errors.entrepreneurs_contacted && <p className="text-sm text-destructive">{errors.entrepreneurs_contacted.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.studentsContacted}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("students_contacted")} />
-              {errors.students_contacted && <p className="text-sm text-destructive">{errors.students_contacted.message}</p>}
+              {errors.students_contacted && <p className="text-sm text-destructive">{errors.students_contacted.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.fieldVisits}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("field_visits")} />
-              {errors.field_visits && <p className="text-sm text-destructive">{errors.field_visits.message}</p>}
+              {errors.field_visits && <p className="text-sm text-destructive">{errors.field_visits.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.businessProfiles}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("business_profiles")} />
-              {errors.business_profiles && <p className="text-sm text-destructive">{errors.business_profiles.message}</p>}
+              {errors.business_profiles && <p className="text-sm text-destructive">{errors.business_profiles.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.successStories}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("success_stories")} />
-              {errors.success_stories && <p className="text-sm text-destructive">{errors.success_stories.message}</p>}
+              {errors.success_stories && <p className="text-sm text-destructive">{errors.success_stories.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.schemesStudied}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("schemes_studied")} />
-              {errors.schemes_studied && <p className="text-sm text-destructive">{errors.schemes_studied.message}</p>}
+              {errors.schemes_studied && <p className="text-sm text-destructive">{errors.schemes_studied.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.socialPosts}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("social_posts")} />
-              {errors.social_posts && <p className="text-sm text-destructive">{errors.social_posts.message}</p>}
+              {errors.social_posts && <p className="text-sm text-destructive">{errors.social_posts.message as string}</p>}
             </div>
             <div className="space-y-2">
               <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.meetingsAttended}</Label>
               <Input type="number" min="0" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("meetings_attended")} />
-              {errors.meetings_attended && <p className="text-sm text-destructive">{errors.meetings_attended.message}</p>}
+              {errors.meetings_attended && <p className="text-sm text-destructive">{errors.meetings_attended.message as string}</p>}
             </div>
           </div>
         </CardContent>
@@ -361,17 +381,17 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
             {watchBusinessContacted && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8 border-l-2 border-[#E67E22]/30">
                 <Input placeholder={dict.dailyReport.businessName} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("business_name")} />
-              {errors.business_name && <p className="text-sm text-destructive">{errors.business_name.message}</p>}
+                {errors.business_name && <p className="text-sm text-destructive">{errors.business_name.message as string}</p>}
                 <Input placeholder={dict.dailyReport.location} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("business_location")} />
-              {errors.business_location && <p className="text-sm text-destructive">{errors.business_location.message}</p>}
+                {errors.business_location && <p className="text-sm text-destructive">{errors.business_location.message as string}</p>}
                 <Input placeholder={dict.dailyReport.category} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("business_category")} />
-              {errors.business_category && <p className="text-sm text-destructive">{errors.business_category.message}</p>}
+                {errors.business_category && <p className="text-sm text-destructive">{errors.business_category.message as string}</p>}
                 <Input placeholder={dict.dailyReport.contactPerson} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("contact_person")} />
-              {errors.contact_person && <p className="text-sm text-destructive">{errors.contact_person.message}</p>}
+                {errors.contact_person && <p className="text-sm text-destructive">{errors.contact_person.message as string}</p>}
                 <Input placeholder={dict.dailyReport.contactNumber} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("contact_number")} />
-              {errors.contact_number && <p className="text-sm text-destructive">{errors.contact_number.message}</p>}
+                {errors.contact_number && <p className="text-sm text-destructive">{errors.contact_number.message as string}</p>}
                 <Textarea placeholder={dict.dailyReport.observation} className="md:col-span-2 bg-[#FEF5EB]/50 text-base" {...register("business_observation")} />
-              {errors.business_observation && <p className="text-sm text-destructive">{errors.business_observation.message}</p>}
+                {errors.business_observation && <p className="text-sm text-destructive">{errors.business_observation.message as string}</p>}
               </div>
             )}
           </div>
@@ -390,9 +410,9 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
             {watchGovernmentScheme && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8 border-l-2 border-[#E67E22]/30">
                 <Input placeholder={dict.dailyReport.schemeName} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("scheme_name")} />
-              {errors.scheme_name && <p className="text-sm text-destructive">{errors.scheme_name.message}</p>}
+                {errors.scheme_name && <p className="text-sm text-destructive">{errors.scheme_name.message as string}</p>}
                 <Textarea placeholder={dict.dailyReport.schemeDetails} className="md:col-span-2 bg-[#FEF5EB]/50 text-base" {...register("scheme_details")} />
-              {errors.scheme_details && <p className="text-sm text-destructive">{errors.scheme_details.message}</p>}
+                {errors.scheme_details && <p className="text-sm text-destructive">{errors.scheme_details.message as string}</p>}
               </div>
             )}
           </div>
@@ -411,16 +431,16 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
             {watchYouthOutreach && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-8 border-l-2 border-[#E67E22]/30">
                 <Input placeholder={dict.dailyReport.institutionName} className="bg-[#FEF5EB]/50 h-12 text-base" {...register("institution_name")} />
-              {errors.institution_name && <p className="text-sm text-destructive">{errors.institution_name.message}</p>}
+                {errors.institution_name && <p className="text-sm text-destructive">{errors.institution_name.message as string}</p>}
                 <div className="space-y-2">
                   <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.studentsSpoken}</Label>
                   <Input type="number" min="0" className="bg-[#FEF5EB]/50 h-12 text-base" {...register("students_spoken")} />
-              {errors.students_spoken && <p className="text-sm text-destructive">{errors.students_spoken.message}</p>}
+                  {errors.students_spoken && <p className="text-sm text-destructive">{errors.students_spoken.message as string}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.interestedStudents}</Label>
                   <Input type="number" min="0" className="bg-[#FEF5EB]/50 h-12 text-base" {...register("interested_students")} />
-              {errors.interested_students && <p className="text-sm text-destructive">{errors.interested_students.message}</p>}
+                  {errors.interested_students && <p className="text-sm text-destructive">{errors.interested_students.message as string}</p>}
                 </div>
                 <div className="md:col-span-2 flex items-center space-x-3 mt-4">
                   <Controller
@@ -435,7 +455,7 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
                 {watchStartupIdeaFound && (
                   <>
                     <Textarea placeholder={dict.dailyReport.startupDetails} className="md:col-span-2 bg-[#FEF5EB]/50 text-base" {...register("startup_idea_details")} />
-                    {errors.startup_idea_details && <p className="text-sm text-destructive">{errors.startup_idea_details.message}</p>}
+                    {errors.startup_idea_details && <p className="text-sm text-destructive">{errors.startup_idea_details.message as string}</p>}
                   </>
                 )}
               </div>
@@ -454,19 +474,19 @@ const { register, handleSubmit, control, formState: { errors }, } = useForm({
           <div className="space-y-2">
             <Label htmlFor="achievement" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.keyAchievement}</Label>
             <Input id="achievement" className="bg-[#FEF5EB]/30 h-12 text-base" {...register("achievement")} />
-              {errors.achievement && <p className="text-sm text-destructive">{errors.achievement.message}</p>}
+            {errors.achievement && <p className="text-sm text-destructive">{errors.achievement.message as string}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="challenges" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.challenges}</Label>
             <Textarea id="challenges" className="bg-[#FEF5EB]/30 text-base min-h-[80px]" {...register("challenges")} />
-              {errors.challenges && <p className="text-sm text-destructive">{errors.challenges.message}</p>}
+            {errors.challenges && <p className="text-sm text-destructive">{errors.challenges.message as string}</p>}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="tomorrow_plan" className="text-zinc-800 dark:text-zinc-200">{dict.dailyReport.tomorrowPlan}</Label>
             <Textarea id="tomorrow_plan" className="bg-[#FEF5EB]/30 text-base min-h-[80px]" {...register("tomorrow_plan")} />
-              {errors.tomorrow_plan && <p className="text-sm text-destructive">{errors.tomorrow_plan.message}</p>}
+            {errors.tomorrow_plan && <p className="text-sm text-destructive">{errors.tomorrow_plan.message as string}</p>}
           </div>
         </CardContent>
       </Card>
